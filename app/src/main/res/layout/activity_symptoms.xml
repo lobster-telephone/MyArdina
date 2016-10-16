@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.myardina.buckeyes.myardina.SymptomsActivity">
+
+    <RelativeLayout
+        android:id="@+id/symptoms_Screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RadioGroup
+            android:id="@+id/mf_radio_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/male_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/male"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <RadioButton android:id="@+id/female_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/female"
+                android:textStyle="bold"
+                android:textSize="12sp"/>
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/vd_radio_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@id/mf_radio_buttons"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/ventral_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ventral"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <RadioButton android:id="@+id/dorsal_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dorsal"
+                android:textStyle="bold"
+                android:textSize="12sp"/>
+        </RadioGroup>
+
+
+
+        <RelativeLayout
+            android:id="@+id/body_diagram_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/vd_radio_buttons">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/male_ventral_image"
+                android:contentDescription="@string/male_ventral"
+                android:src="@drawable/male_ventral_image"/>
+
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/mv_head_button"
+                android:background="?android:selectableItemBackground"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="43dp" />
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:id="@+id/mv_chest_button"
+                android:background="?android:selectableItemBackground"
+                android:layout_below="@+id/mv_head_button"
+                android:layout_centerHorizontal="true" />
+
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="70dp"
+                android:id="@+id/mv_abdomen_button"
+                android:background="?android:selectableItemBackground"
+                android:layout_alignLeft="@+id/mv_chest_button"
+                android:layout_alignStart="@+id/mv_chest_button"
+                android:layout_below="@+id/mv_chest_button"
+                android:layout_alignRight="@+id/mv_chest_button"
+                android:layout_alignEnd="@+id/mv_chest_button" />
+
+            <Button
+                android:layout_width="60dp"
+                android:layout_height="175dp"
+                android:id="@+id/mv_legs_button"
+                android:background="?android:selectableItemBackground"
+                android:layout_alignLeft="@+id/mv_abdomen_button"
+                android:layout_alignStart="@+id/mv_abdomen_button"
+                android:layout_below="@+id/mv_abdomen_button"
+                android:layout_alignRight="@+id/mv_abdomen_button"
+                android:layout_alignEnd="@+id/mv_abdomen_button" />
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:id="@+id/mv_arm1_button"
+                android:background="?android:selectableItemBackground"
+                android:layout_above="@+id/mv_abdomen_button"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/mv_chest_button"
+                android:layout_toStartOf="@+id/mv_chest_button" />
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:id="@+id/mv_arm2_button"
+                android:background="?android:selectableItemBackground"
+                android:layout_alignTop="@+id/mv_chest_button"
+                android:layout_toRightOf="@+id/mv_chest_button"
+                android:layout_above="@+id/mv_abdomen_button"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

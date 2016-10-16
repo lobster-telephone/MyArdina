@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "573229537949",
+    "firebase_url": "https://mrardina-3798e.firebaseio.com",
+    "project_id": "mrardina-3798e",
+    "storage_bucket": "mrardina-3798e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573229537949:android:e7a97835bcf2af30",
+        "android_client_info": {
+          "package_name": "com.myardina.buckeyes.myardina"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573229537949-h80onk4ra1if2r8cpt3r73a6sj5vfn9f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfSpjv6AjyOcbUhYPzLWr9mthwJQ3Ld-M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
