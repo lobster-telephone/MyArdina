@@ -21,18 +21,22 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
         <activity
             android:name=".HomeActivity"
             android:label="HomeActivity" />
         <activity android:name=".LoginActivity">
+                <intent-filter>
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
+        </activity>
+        <activity android:name=".SymptomsActivity" />
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SymptomsActivity"></activity>
     </application>
 
 </manifest>
