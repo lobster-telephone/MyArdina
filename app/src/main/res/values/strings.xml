@@ -37,5 +37,11 @@
     <string name="female">Female</string>
     <string name="doctor">Doctor</string>
     <string name="patient">Patient</string>
+    <string name="update_availability">Please update your availability</string>
+
+    <string-array name="doctor_availability_spinner_array">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
 
 </resources>
