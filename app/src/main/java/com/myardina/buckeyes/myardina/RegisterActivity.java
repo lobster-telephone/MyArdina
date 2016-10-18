@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +29,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mEmailConfirmView;
     private EditText mPasswordView;
     private EditText mPasswordConfirmView;
+    private RadioButton doctor_button;
+    private RadioButton patient_button;
+    boolean doctorCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +59,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
         mEmailRegisterButton.setOnClickListener(this);
+
+        doctor_button = (RadioButton) findViewById(R.id.radio_doctor);
+        patient_button = (RadioButton) findViewById(R.id.radio_patient);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        switch(id) {
+        switch (id) {
             case R.id.email_register_button:
                 attemptLoginOrRegister();
                 break;
@@ -255,40 +262,59 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    public void onDoctorPatientButtonClicked(View view) {
+        // Is the button now checked?
+        doctorCheck = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch (view.getId()) {
+            case R.id.radio_doctor:
+                doctorCheck = true;
+                patient_button.setChecked(false);
+                break;
+            case R.id.radio_patient:
+                doctorCheck = false;
+                doctor_button.setChecked(false);
+                break;
+        }
+    }
+
+
     @Override
-    protected void onStart(){
+    protected void onStart() {
         System.out.println("onStart method for RegisterActivity being called");
         super.onStart();
     }
 
     @Override
-    protected void onRestart(){
+    protected void onRestart() {
         System.out.println("onRestart method for RegisterActivity being called");
         super.onRestart();
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         System.out.println("onPause method for RegisterActivity being called");
         super.onPause();
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         System.out.println("onResume method for RegisterActivity being called");
         super.onResume();
     }
 
     @Override
-    protected void onStop()
-    {
+    protected void onStop() {
         System.out.println("onStop method for RegisterActivity being called");
         super.onStop();
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         System.out.println("onDestroy method for RegisterActivity being called");
         super.onDestroy();
     }
+
+
 }
