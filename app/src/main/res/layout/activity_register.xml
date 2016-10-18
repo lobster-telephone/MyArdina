@@ -6,24 +6,67 @@
     <RelativeLayout
         android:id="@+id/register_top_bar"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/register_top_bar_text"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
             android:keepScreenOn="true"
+            android:padding="10dp"
+            android:textAlignment="center"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:textAlignment="center"/>
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/register_top_bar_text"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:paddingBottom="10dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <RadioButton
+                    android:id="@+id/radio_doctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onDoctorPatientButtonClicked"
+                    android:text="@string/doctor" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <RadioButton
+                    android:id="@+id/radio_patient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onDoctorPatientButtonClicked"
+                    android:text="@string/patient" />
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/register_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/register_bottom_bar"
-        android:id="@+id/register_form"
         android:layout_below="@+id/register_top_bar">
 
         <LinearLayout
@@ -80,8 +123,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textAlignment="center"
                 android:text="@string/register"
+                android:textAlignment="center"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -91,6 +134,5 @@
         android:id="@+id/register_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
-    </RelativeLayout>
+        android:layout_alignParentBottom="true"></RelativeLayout>
 </RelativeLayout>

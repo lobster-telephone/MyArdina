@@ -35,5 +35,7 @@
     <string name="dorsal">Back</string>
     <string name="male_ventral">male body frontal view"</string>
     <string name="female">Female</string>
+    <string name="doctor">Doctor</string>
+    <string name="patient">Patient</string>
 
 </resources>
