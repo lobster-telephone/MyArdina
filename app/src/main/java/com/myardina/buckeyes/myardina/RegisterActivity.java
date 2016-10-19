@@ -251,6 +251,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     String isDoctor = doctor ? "Y" : "N";
                     childRef.child("Doctor").setValue(isDoctor);
                     childRef.child("PhoneNumber").setValue("0000000000");
+                    childRef.child("Available").setValue("N");
+                    childRef.child("VerifiedDoctor").setValue("N");
 
                     Intent nextActivity;
                     if (doctor) {
