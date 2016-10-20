@@ -18,13 +18,18 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.Utility.CommonConstants;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
+    private FirebaseDatabase ref;
+    private DatabaseReference usersTable;
+
     private UserRegisterTask mRegTask = null;
 
-    // UI references.
+    // UI references
     private EditText mEmailView;
     private EditText mEmailConfirmView;
     private EditText mPasswordView;
@@ -39,6 +44,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
 
         Bundle extras = this.getIntent().getExtras();
+
+        ref = FirebaseDatabase.getInstance();
+        usersTable = ref.getReference("Users");
 
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
@@ -236,8 +244,23 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             OnSuccessListener login_success = new OnSuccessListener() {
                 @Override
                 public void onSuccess(Object o) {
-                    Intent symptomsActivity = new Intent(RegisterActivity.this, SymptomsActivity.class);
-                    RegisterActivity.this.startActivity(symptomsActivity);
+                    String userId = UserRegisterTask.this.auth.getCurrentUser().getUid();
+                    DatabaseReference childRef = RegisterActivity.this.usersTable.push();
+                    childRef.child("UserId").setValue(userId);
+                    boolean doctor = RegisterActivity.this.doctor_button.isChecked();
+                    String isDoctor = doctor ? "Y" : "N";
+                    childRef.child("Doctor").setValue(isDoctor);
+                    childRef.child("PhoneNumber").setValue("0000000000");
+                    childRef.child("Available").setValue("N");
+                    childRef.child("VerifiedDoctor").setValue("N");
+
+                    Intent nextActivity;
+                    if (doctor) {
+                        nextActivity = new Intent(RegisterActivity.this, DoctorActivity.class);
+                    } else {
+                        nextActivity = new Intent(RegisterActivity.this, SymptomsActivity.class);
+                    }
+                    RegisterActivity.this.startActivity(nextActivity);
                 }
             };
             OnFailureListener login_failure = new OnFailureListener() {

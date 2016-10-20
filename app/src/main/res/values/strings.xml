@@ -35,9 +35,12 @@
     <string name="dorsal">Back</string>
     <string name="male_ventral">male body frontal view"</string>
     <string name="female">Female</string>
+
     <string name="doctor">Doctor</string>
     <string name="patient">Patient</string>
     <string name="update_availability">Please update your availability</string>
+    <string name="title_activity_payment">PaymentActivity</string>
+    <string name="title_activity_tele_medicine">TeleMedicineActivity</string>
 
     <string-array name="doctor_availability_spinner_array">
         <item>Yes</item>

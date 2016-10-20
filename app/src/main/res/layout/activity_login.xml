@@ -18,6 +18,7 @@
             android:textStyle="bold"
             android:textAlignment="center"/>
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,16 +26,11 @@
         android:id="@+id/login_form"
         android:layout_below="@+id/login_top_bar">
 
-
-
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-
-
                 <EditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
@@ -43,10 +39,6 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true" />
-
-
-
-
                 <EditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
@@ -58,8 +50,6 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true" />
-
-
 
             <Button
                 android:id="@+id/email_sign_in_button"
@@ -82,8 +72,6 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
-
-
     </RelativeLayout>
 
     <RelativeLayout
@@ -92,5 +80,4 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true">
     </RelativeLayout>
-
 </RelativeLayout>

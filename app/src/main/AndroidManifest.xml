@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.myardina.buckeyes.myardina">
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -33,9 +35,15 @@
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register" />
-        <activity android:name=".SymptomsActivity" />
-        \
         <activity android:name=".DoctorActivity"></activity>
+        <activity android:name=".SymptomsActivity" />
+        <activity
+            android:name=".PatientPaymentActivity"
+            android:label="@string/title_activity_payment" />
+        <activity
+            android:name=".TeleMedicineActivity"
+            android:label="@string/title_activity_tele_medicine"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

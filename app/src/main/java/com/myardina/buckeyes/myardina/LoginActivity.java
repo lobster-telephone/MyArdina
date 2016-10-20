@@ -182,8 +182,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Task<AuthResult> login_task  = auth.signInWithEmailAndPassword(mEmail, mPassword);
             OnSuccessListener login_success = new OnSuccessListener() {
                 @Override
-                public void onSuccess(Object o) {
-                    Intent symptomsActivity = new Intent(LoginActivity.this, SymptomsActivity.class);
+                public void onSuccess(Object o) {Intent symptomsActivity = new Intent(LoginActivity.this, SymptomsActivity.class);
                     LoginActivity.this.startActivity(symptomsActivity);
                 }
             };
