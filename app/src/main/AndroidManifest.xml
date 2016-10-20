@@ -38,7 +38,7 @@
         <activity android:name=".DoctorActivity"></activity>
         <activity android:name=".SymptomsActivity" />
         <activity
-            android:name=".PaymentActivity"
+            android:name=".PatientPaymentActivity"
             android:label="@string/title_activity_payment" />
         <activity
             android:name=".TeleMedicineActivity"

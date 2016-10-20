@@ -7,11 +7,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/payment_layout">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:id="@+id/payment_main">
+
+
+
+            <LinearLayout
+                android:id="@+id/payment_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/login_paypal"
+                    style="actionButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textAlignment="center"
+                    android:text="Login to Paypal"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+
 
         <LinearLayout
-            android:id="@+id/payment_form"
+            android:id="@+id/continue_button_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/payment_main"
             android:orientation="vertical">
 
             <Button
