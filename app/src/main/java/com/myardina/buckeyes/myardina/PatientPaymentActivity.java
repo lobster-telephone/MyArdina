@@ -30,7 +30,7 @@ public class PatientPaymentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment);
+        setContentView(R.layout.activity_patientPayment);
 
         //starts up paypal service when activity launched
         Intent intent = new Intent(this, PayPalService.class);

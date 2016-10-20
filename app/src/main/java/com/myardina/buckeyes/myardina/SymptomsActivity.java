@@ -88,7 +88,7 @@ public class SymptomsActivity extends AppCompatActivity {
         continueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent paymentActivity = new Intent(SymptomsActivity.this, PaymentActivity.class);
+                Intent paymentActivity = new Intent(SymptomsActivity.this, PatientPaymentActivity.class);
                 SymptomsActivity.this.startActivity(paymentActivity);
             }
         });
