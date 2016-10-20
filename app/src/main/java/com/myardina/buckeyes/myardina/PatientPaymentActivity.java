@@ -1,19 +1,22 @@
 package com.myardina.buckeyes.myardina;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
 import com.paypal.android.sdk.payments.PayPalConfiguration;
-import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PayPalPayment;
-import java.math.BigDecimal;
-import android.util.Log;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
+import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
-import android.app.Activity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
 import org.json.JSONException;
+
+import java.math.BigDecimal;
 
 public class PatientPaymentActivity extends AppCompatActivity {
 
@@ -30,7 +33,7 @@ public class PatientPaymentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patientPayment);
+        setContentView(R.layout.activity_patient_payment);
 
         //starts up paypal service when activity launched
         Intent intent = new Intent(this, PayPalService.class);
@@ -62,12 +65,6 @@ public class PatientPaymentActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
-
         continueButton = (Button) findViewById(R.id.b_continue_to_map);
         continueButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -77,7 +74,6 @@ public class PatientPaymentActivity extends AppCompatActivity {
             }
         });
     }
-
 
     @Override
     public void onDestroy() {
@@ -109,5 +105,4 @@ public class PatientPaymentActivity extends AppCompatActivity {
             Log.i("paymentExample", "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
         }
     }
-
 }

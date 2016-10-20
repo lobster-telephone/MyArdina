@@ -1,11 +1,15 @@
 package com.myardina.buckeyes.myardina;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -20,12 +24,40 @@ public class TeleMedicineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tele_medicine);
 
+        NotificationCompat.Builder mBuilder =
+                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.splash)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World!");
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, PatientPaymentActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(PatientPaymentActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(1, mBuilder.build());
+
         Button button = (Button) findViewById(R.id.buttonCall);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                callIntent.setData(Uri.parse("tel:0000000000"));
+                callIntent.setData(Uri.parse("tel:4197062697"));
                 TeleMedicineActivity.this.startActivity(callIntent);
             }
         });
@@ -75,24 +107,22 @@ public class TeleMedicineActivity extends AppCompatActivity {
 
             if (TelephonyManager.CALL_STATE_RINGING == state) {
                 // phone ringing
-                Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
+                Log.d(LOG_TAG, "RINGING, number: " + incomingNumber);
             }
 
             if (TelephonyManager.CALL_STATE_OFFHOOK == state) {
                 // active
-                Log.i(LOG_TAG, "OFFHOOK");
-
+                Log.d(LOG_TAG, "OFFHOOK");
                 isPhoneCalling = true;
             }
 
             if (TelephonyManager.CALL_STATE_IDLE == state) {
                 // run when class initial and phone call ended,
                 // need detect flag from CALL_STATE_OFFHOOK
-                Log.i(LOG_TAG, "IDLE");
+                Log.d(LOG_TAG, "IDLE");
 
                 if (isPhoneCalling) {
-
-                    Log.i(LOG_TAG, "restart app");
+                    Log.d(LOG_TAG, "restart app");
 
                     // restart app
                     Intent i = getBaseContext().getPackageManager()
@@ -103,7 +133,6 @@ public class TeleMedicineActivity extends AppCompatActivity {
 
                     isPhoneCalling = false;
                 }
-
             }
         }
     }
