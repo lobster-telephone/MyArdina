@@ -48,6 +48,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mEmailSignInButton.setOnClickListener(this);
         Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
         mEmailRegisterButton.setOnClickListener(this);
+
+        // DEBUG BUTTON ! REMOVE BEFORE DEPLOYING
+        Button bQuickLogin = (Button) findViewById(R.id.b_quick_login);
+        bQuickLogin.setOnClickListener(this);
     }
 
     @Override
@@ -64,6 +68,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     registerActivity.putExtra(CommonConstants.EXTRA_EMAIL, email);
                 }
                 LoginActivity.this.startActivity(registerActivity);
+                break;
+            case R.id.b_quick_login:
+                mEmailView.setText("tylacks@gmail.com");
+                mPasswordView.setText("Dummy1234");
+                attemptLogin();
                 break;
             default:
                 break;

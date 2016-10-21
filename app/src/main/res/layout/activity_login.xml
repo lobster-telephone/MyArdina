@@ -71,6 +71,16 @@
                 android:text="@string/register"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/b_quick_login"
+                style="actionButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAlignment="center"
+                android:text="Quick Login (Debug)"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </RelativeLayout>
 

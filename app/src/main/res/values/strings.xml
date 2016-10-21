@@ -41,6 +41,11 @@
     <string name="update_availability">Please update your availability</string>
     <string name="title_activity_payment">PatientPaymentActivity</string>
     <string name="title_activity_tele_medicine">TeleMedicineActivity</string>
+    <string name="title_activity_doctor">DoctorActivity</string>
+
+    <string name="accept_label">Accept</string>
+    <string name="decline_label">Decline</string>
+    <string name="call_number">Call 4197062697</string>
 
     <string-array name="doctor_availability_spinner_array">
         <item>Yes</item>
