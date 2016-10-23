@@ -49,9 +49,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
         mEmailRegisterButton.setOnClickListener(this);
 
-        // DEBUG BUTTON ! REMOVE BEFORE DEPLOYING
+
+        // TODO: DEBUG BUTTON ! REMOVE BEFORE DEPLOYING
         Button bQuickLogin = (Button) findViewById(R.id.b_quick_login);
         bQuickLogin.setOnClickListener(this);
+        Button bQuickLoginDoctor = (Button) findViewById(R.id.b_quick_login_doctor);
+        bQuickLoginDoctor.setOnClickListener(this);
     }
 
     @Override
@@ -74,6 +77,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 mPasswordView.setText("Dummy1234");
                 attemptLogin();
                 break;
+            case R.id.b_quick_login_doctor:
+                mEmailView.setText("androidtestingosu@gmail.com");
+                mPasswordView.setText("Abcdefg");
+                attemptLogin();
+                break;
+
             default:
                 break;
         }

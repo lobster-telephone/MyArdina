@@ -48,8 +48,8 @@
     <string name="call_number">Call 4197062697</string>
 
     <string-array name="doctor_availability_spinner_array">
-        <item>Yes</item>
-        <item>No</item>
+        <item>Available</item>
+        <item>Busy</item>
     </string-array>
 
 </resources>
