@@ -1,66 +1,64 @@
 package com.myardina.buckeyes.myardina;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CallLog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
-public class TeleMedicineActivity extends AppCompatActivity {
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+public class TeleMedicineActivity extends AppCompatActivity  {
+
+    private static final String LOG_TELE_MEDICINE = "TELE_MEDICINE_ACTIVITY";
+
+    private FirebaseDatabase database;
+    private DatabaseReference ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tele_medicine);
 
-        NotificationCompat.Builder mBuilder =
-                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.splash)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, PatientPaymentActivity.class);
+        database = FirebaseDatabase.getInstance();
+        ref = database.getReference("Users");
 
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(PatientPaymentActivity.class);
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        // mId allows you to update the notification later on.
-        mNotificationManager.notify(1, mBuilder.build());
-
-        Button button = (Button) findViewById(R.id.buttonCall);
-        button.setOnClickListener(new View.OnClickListener() {
+        ref.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onClick(View arg0) {
-                Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                callIntent.setData(Uri.parse("tel:4197062697"));
-                TeleMedicineActivity.this.startActivity(callIntent);
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                UserDTO user = dataSnapshot.getValue(UserDTO.class);
+                Log.d(LOG_TELE_MEDICINE, "UserId: " + user.getUserId());
+                Log.d(LOG_TELE_MEDICINE, "Previous Post ID: " + prevChildKey);
             }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                DatabaseReference user = ref.child(prevChildKey);
+//                sendNotification();
+                Log.d(LOG_TELE_MEDICINE, "Previous Post ID: " + prevChildKey);}
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
         });
+
+//        Button bCall = (Button) findViewById(R.id.bCall);
+//        bCall.setOnClickListener(this);
+//
+//        Button bNotify = (Button) findViewById(R.id.bNotify);
+//        bNotify.setOnClickListener(this);
 
         // add PhoneStateListener
         PhoneCallListener phoneListener = new PhoneCallListener();
@@ -69,31 +67,57 @@ public class TeleMedicineActivity extends AppCompatActivity {
         telephonyManager.listen(phoneListener,PhoneStateListener.LISTEN_CALL_STATE);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
+//    @Override
+//    public void onClick(View v) {
+//        int view = v.getId();
+//        switch(view) {
+//            case R.id.bCall:
+//                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+//                callIntent.setData(Uri.parse("tel:6145371807"));
+//                TeleMedicineActivity.this.startActivity(callIntent);
+//                break;
+//            case R.id.bNotify:
+//                sendNotification();
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(TeleMedicineActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
+//    private void sendNotification() {
+//
+//        // Gets an instance of the NotificationManager service
+//        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//        Intent acceptIntent = new Intent(Intent.ACTION_CALL);
+//        acceptIntent.setData(Uri.parse("tel:6145371807"));
+//        PendingIntent pendingAcceptIntent = PendingIntent.getActivity(this, 0, acceptIntent, 0);
+//
+//        Intent declineIntent = new Intent(this, TeleMedicineActivity.class);
+//        PendingIntent pendingDeclineIntent = PendingIntent.getActivity(this, 0, declineIntent, 0);
+//
+//        // Create the reply action and add the remote input.
+//
+//        //Get an instance of NotificationManager
+//        NotificationCompat.Builder mBuilder =
+//                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+//                        .setSmallIcon(R.drawable.splash)
+//                        .setContentTitle("My notification")
+//                        .setContentText("Hello World!")
+//                        .addAction(R.drawable.splash, "ACCEPT", pendingAcceptIntent)
+//                        .addAction(R.drawable.splash, "DECLINE", pendingDeclineIntent);
+//
+//        //mBuilder.setContentIntent(pendingIntent);
+//
+//        // When you issue multiple notifications about the same type of event, it’s best practice for
+//        // your app to try to update an existing notification with this new information, rather than
+//        // immediately creating a new notification. If you want to update this notification at a
+//        // later date, you need to assign it an ID. You can then use this ID whenever you issue a
+//        // subsequent notification. If the previous notification is still visible, the system will
+//        // update this existing notification, rather than create a new one. In this example, the
+//        // notification’s ID is 001
+//        mNotificationManager.notify(1, mBuilder.build());
+//    }
 
     //monitor phone call activities
     private class PhoneCallListener extends PhoneStateListener {
@@ -130,6 +154,8 @@ public class TeleMedicineActivity extends AppCompatActivity {
                                     getBaseContext().getPackageName());
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
+
+                    Log.d(LOG_TAG, "Time Call took: " + CallLog.Calls.DURATION);
 
                     isPhoneCalling = false;
                 }

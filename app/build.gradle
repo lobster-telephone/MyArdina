@@ -40,9 +40,8 @@ dependencies {
     compile 'com.google.firebase:firebase-core:9.6.1'
     compile 'com.google.firebase:firebase-database:9.6.1'
     compile 'com.firebase:firebase-client-android:2.5.0'
+    compile 'com.firebaseui:firebase-ui:0.3.1'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    compile 'com.facebook.android:audience-network-sdk:4.6.0'
     compile 'com.paypal.sdk:paypal-android-sdk:2.15.0'
 }
 

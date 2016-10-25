@@ -30,6 +30,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private UserRegisterTask mRegTask = null;
 
     // UI references
+    private EditText mFirstNameView;
+    private EditText mLastNameView;
     private EditText mEmailView;
     private EditText mEmailConfirmView;
     private EditText mPasswordView;
@@ -47,6 +49,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         ref = FirebaseDatabase.getInstance();
         usersTable = ref.getReference("Users");
+
+        mFirstNameView = (EditText) findViewById(R.id.etFirstName);
+        mFirstNameView.setOnFocusChangeListener(this);
+        mLastNameView = (EditText) findViewById(R.id.etLastName);
+        mLastNameView.setOnFocusChangeListener(this);
 
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
@@ -77,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         int id = v.getId();
         switch (id) {
             case R.id.email_register_button:
-                attemptLoginOrRegister();
+                attemptRegister();
                 break;
             default:
                 break;
@@ -88,8 +95,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onFocusChange(View v, boolean hasFocus) {
         int id = v.getId();
         if (!hasFocus) {
-            String original = "";
-            String confirm = "";
+            String original;
+            String confirm;
             switch (id) {
                 case R.id.email:
                     validateEmail(mEmailView.getText().toString());
@@ -107,6 +114,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     confirm = mPasswordConfirmView.getText().toString();
                     validateConfirmField(original, confirm, mPasswordConfirmView, getString(R.string.error_password_mismatch));
                     break;
+                case R.id.etFirstName:
+                    validateName(mFirstNameView.getText().toString());
+                    break;
+                case R.id.etLastName:
+                    validateName(mLastNameView.getText().toString());
                 default:
                     break;
             }
@@ -119,24 +131,28 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * errors are presented and no actual login attempt is made.
      * int l_r is 0 if login 1 if register
      */
-    private void attemptLoginOrRegister() {
+    private void attemptRegister() {
         // Reset errors.
+        mFirstNameView.setError(null);
+        mLastNameView.setError(null);
         mEmailView.setError(null);
         mEmailConfirmView.setError(null);
         mPasswordView.setError(null);
         mPasswordConfirmView.setError(null);
 
         // Store values at the time of the login attempt.
+        String firstName = mFirstNameView.getText().toString();
+        String lastName = mLastNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String emailConfirm = mEmailConfirmView.getText().toString();
         String password = mPasswordView.getText().toString();
         String passwordConfirm = mPasswordConfirmView.getText().toString();
 
-        View focusView = null;
+        View focusView;
 
         boolean validPasswordConfirm = validateConfirmField(password, passwordConfirm,
                 mPasswordConfirmView, getString(R.string.error_password_mismatch));
-        focusView = validPasswordConfirm ? mPasswordConfirmView : focusView;
+        focusView = validPasswordConfirm ? mPasswordConfirmView : null;
 
         boolean validPassword = validatePassword(password);
         focusView = validPassword ? mPasswordView : focusView;
@@ -147,6 +163,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         boolean validEmail = validateEmail(email);
         focusView = validEmail ? mEmailView : focusView;
+
+        boolean validLastName = validateName(lastName);
+        focusView = validLastName ? mLastNameView : focusView;
+
+        boolean validFirstName = validateName(firstName);
+        focusView = validFirstName ? mFirstNameView : focusView;
 
         if (focusView != null) {
             // There was an error; don't attempt login and focus the first
@@ -160,6 +182,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Intent registerActivity = new Intent(RegisterActivity.this, RegisterActivity.class);
             RegisterActivity.this.startActivity(registerActivity);
         }
+    }
+
+    private boolean validateName(String name) {
+        boolean invalid = false;
+        // Check for a valid name.
+        if (TextUtils.isEmpty(name)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            invalid = true;
+        }
+        return invalid;
     }
 
     private boolean validatePassword(String password) {
@@ -247,16 +279,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     String userId = UserRegisterTask.this.auth.getCurrentUser().getUid();
                     DatabaseReference childRef = RegisterActivity.this.usersTable.push();
                     childRef.child("UserId").setValue(userId);
+                    childRef.child("FirstName").setValue(mFirstNameView.getText().toString());
+                    childRef.child("LastName").setValue(mLastNameView.getText().toString());
                     boolean doctor = RegisterActivity.this.doctor_button.isChecked();
                     String isDoctor = doctor ? "Y" : "N";
                     childRef.child("Doctor").setValue(isDoctor);
-                    childRef.child("PhoneNumber").setValue("0000000000");
+                    childRef.child("RequesterPhoneNumber").setValue("0000000000");
                     childRef.child("Available").setValue("N");
                     childRef.child("VerifiedDoctor").setValue("N");
+                    childRef.child("Requested").setValue("N");
 
                     Intent nextActivity;
                     if (doctor) {
                         nextActivity = new Intent(RegisterActivity.this, DoctorActivity.class);
+                        nextActivity.putExtra("UserId", childRef.getKey());
                     } else {
                         nextActivity = new Intent(RegisterActivity.this, SymptomsActivity.class);
                     }

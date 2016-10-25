@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.firebase.client.Firebase;
+
 /**
  * Activity for the splash screen
  */
@@ -16,6 +18,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
         //Remove title bar
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         //Remove notification bar

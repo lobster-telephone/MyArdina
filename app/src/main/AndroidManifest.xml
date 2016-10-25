@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -35,14 +36,21 @@
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register" />
-        <activity android:name=".DoctorActivity"></activity>
-        <activity android:name=".SymptomsActivity" />
+        <activity
+            android:name=".DoctorActivity"
+            android:label="@string/title_activity_doctor" />
+        <activity
+            android:name=".SymptomsActivity"
+            android:label="@string/title_activity_symptoms" />
         <activity
             android:name=".PatientPaymentActivity"
             android:label="@string/title_activity_payment" />
         <activity
             android:name=".TeleMedicineActivity"
-            android:label="@string/title_activity_tele_medicine"
+            android:label="@string/title_activity_tele_medicine" />
+        <activity
+            android:name=".DoctorsAvailable"
+            android:label="@string/title_activity_doctors_available"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 

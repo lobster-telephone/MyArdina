@@ -4,6 +4,8 @@
     <string name="facebook_app_id">1647878202208728</string>
 
     <!-- Login/Register -->
+    <string name="prompt_first_name">First Name</string>
+    <string name="prompt_last_name">Last Name</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_email_confirm">Confirm Email</string>
     <string name="prompt_password">Password</string>
@@ -51,5 +53,6 @@
         <item>Available</item>
         <item>Busy</item>
     </string-array>
+    <string name="title_activity_doctors_available">DoctorsAvailable</string>
 
 </resources>

@@ -12,8 +12,6 @@
             android:layout_height="400dp"
             android:id="@+id/payment_main">
 
-
-
             <LinearLayout
                 android:id="@+id/payment_form"
                 android:layout_width="match_parent"
@@ -31,11 +29,7 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-
-
         </RelativeLayout>
-
 
         <LinearLayout
             android:id="@+id/continue_button_holder"

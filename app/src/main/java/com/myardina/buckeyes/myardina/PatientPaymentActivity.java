@@ -69,7 +69,7 @@ public class PatientPaymentActivity extends AppCompatActivity {
         continueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent teleMedicineActivity = new Intent(PatientPaymentActivity.this, TeleMedicineActivity.class);
+                Intent teleMedicineActivity = new Intent(PatientPaymentActivity.this, DoctorsAvailable.class);
                 PatientPaymentActivity.this.startActivity(teleMedicineActivity);
             }
         });

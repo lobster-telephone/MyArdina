@@ -18,6 +18,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.myardina.buckeyes.myardina.Common.Utility.CommonConstants;
 
 
@@ -26,11 +31,17 @@ import com.myardina.buckeyes.myardina.Common.Utility.CommonConstants;
  */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
+    private static final String LOG_LOGIN_ACTIVITY = "LOG_LOGIN_ACTIVITY";
+
     private UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
+
+    private FirebaseDatabase mRef;
+    private DatabaseReference mUsersTable;
+    private DatabaseReference mChildRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +60,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
         mEmailRegisterButton.setOnClickListener(this);
 
+        mRef = FirebaseDatabase.getInstance();
+        mUsersTable = mRef.getReference().child("Users");
 
         // TODO: DEBUG BUTTON ! REMOVE BEFORE DEPLOYING
         Button bQuickLogin = (Button) findViewById(R.id.b_quick_login);
@@ -78,8 +91,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 attemptLogin();
                 break;
             case R.id.b_quick_login_doctor:
-                mEmailView.setText("androidtestingosu@gmail.com");
-                mPasswordView.setText("Abcdefg");
+                mEmailView.setText("t6@gmail.com");
+                mPasswordView.setText("Dummy1234");
                 attemptLogin();
                 break;
 
@@ -200,8 +213,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Task<AuthResult> login_task  = auth.signInWithEmailAndPassword(mEmail, mPassword);
             OnSuccessListener login_success = new OnSuccessListener() {
                 @Override
-                public void onSuccess(Object o) {Intent symptomsActivity = new Intent(LoginActivity.this, SymptomsActivity.class);
-                    LoginActivity.this.startActivity(symptomsActivity);
+                public void onSuccess(Object o) {
+                    mUsersTable.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            boolean found = false;
+                            String userId = "";
+                            for (DataSnapshot user : dataSnapshot.getChildren()) {
+                                for (DataSnapshot userInfo : user.getChildren()) {
+                                    if (TextUtils.equals("UserId", userInfo.getKey())) {
+                                        userId = userInfo.getValue().toString();
+                                        if (TextUtils.equals(auth.getCurrentUser().getUid(), userId)) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (found) {
+                                    for (DataSnapshot userInfo : user.getChildren()) {
+                                        if (TextUtils.equals("Doctor", userInfo.getKey())) {
+                                            String doctor = userInfo.getValue().toString();
+                                            if (TextUtils.equals(doctor, "Y")) {
+                                                Intent doctorActivity = new Intent(LoginActivity.this, DoctorActivity.class);
+                                                doctorActivity.putExtra("UserId", user.getKey());
+                                                LoginActivity.this.startActivity(doctorActivity);
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
+                    LoginActivity.this.startActivity(new Intent(LoginActivity.this, SymptomsActivity.class));
                 }
             };
             OnFailureListener login_failure = new OnFailureListener() {

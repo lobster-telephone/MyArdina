@@ -3,10 +3,23 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/buttonCall"
-        android:layout_width="wrap_content"
+    <!--<Button-->
+        <!--android:id="@+id/bCall"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/call_number" />-->
+
+    <!--<Button-->
+        <!--android:id="@+id/bNotify"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Send Notification" />-->
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="call 0000000000" />
+        android:text="PLEASE WAIT FOR THE DOCTOR TO RESPOND"
+        android:textSize="18sp"
+        android:textAlignment="center"/>
 
 </LinearLayout>
