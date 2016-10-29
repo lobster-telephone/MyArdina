@@ -3,7 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include android:id="@+id/app_bar"
+        layout="@layout/app_bar"/>
+
     <RelativeLayout
+        android:layout_below="@id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/payment_layout">

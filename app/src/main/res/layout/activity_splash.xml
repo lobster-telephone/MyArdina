@@ -12,7 +12,8 @@
         android:layout_alignParentBottom="true"
         android:paddingBottom="10dp">
 
-        <include layout="@layout/loading_circle" />
+        <include layout="@layout/loading_circle"
+            />
     </LinearLayout>
 
 

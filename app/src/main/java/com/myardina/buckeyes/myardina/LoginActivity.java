@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -38,7 +39,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
-
     private FirebaseDatabase mRef;
     private DatabaseReference mUsersTable;
     private DatabaseReference mChildRef;
@@ -48,7 +48,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         System.out.println("onCreate method for LoginActivity being called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
         mEmailView.setOnFocusChangeListener(this);

@@ -3,6 +3,7 @@ package com.myardina.buckeyes.myardina;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -37,7 +38,8 @@ public class DoctorsAvailable extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctors_available);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
         lvDoctorListView = (ListView) findViewById(R.id.lvDoctorsAvailableList);
         names = new ArrayList<>();
         userIds = new HashMap<>();
