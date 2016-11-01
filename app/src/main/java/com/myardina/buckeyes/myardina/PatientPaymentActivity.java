@@ -27,7 +27,7 @@ public class PatientPaymentActivity extends AppCompatActivity {
 
             // Start with mock environment.  When ready, switch to sandbox (ENVIRONMENT_SANDBOX)
             // or live (ENVIRONMENT_PRODUCTION)
-            .environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
+            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
 
             .clientId("<YOUR_CLIENT_ID>");
 
