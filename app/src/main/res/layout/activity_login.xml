@@ -1,106 +1,110 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/ardina_login">
 
-    <include android:id="@+id/app_bar"
-        layout="@layout/app_bar"/>
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar" />
 
     <RelativeLayout
-        android:id="@+id/login_top_bar"
         android:layout_below="@id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <TextView
-            android:id="@+id/login_top_bar_text"
+        android:layout_height="wrap_content"
+        >
+
+        <RelativeLayout
+            android:id="@+id/login_top_bar"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:layout_centerInParent="true"
-            android:keepScreenOn="true"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textAlignment="center"/>
-    </RelativeLayout>
+            android:layout_height="50dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/login_bottom_bar"
-        android:id="@+id/login_form"
-        android:layout_below="@+id/login_top_bar">
+            <TextView
+                android:id="@+id/login_top_bar_text"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="15dp"
+                android:keepScreenOn="true"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/email_login_form"
+        <RelativeLayout
+            android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-                <EditText
-                    android:id="@+id/email"
+            android:layout_marginTop="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/login_top_bar">
+
+            <LinearLayout
+                android:id="@+id/email_login_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/login_info"
+                    layout="@layout/login_auth" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-                <EditText
-                    android:id="@+id/password"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/email_sign_in_button"
+                        style="actionButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:text="@string/action_sign_in"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/email_register_button"
+                        style="actionButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:text="@string/register"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+                <Button
+                    android:id="@+id/b_quick_login"
+                    style="actionButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
-                    android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:layout_marginTop="16dp"
+                    android:text="Patient Login (Debug)"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/email_sign_in_button"
-                style="actionButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textAlignment="center"
-                android:text="@string/action_sign_in"
-                android:textStyle="bold" />
+                <Button
+                    android:id="@+id/b_quick_login_doctor"
+                    style="actionButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Doctor Login (Debug)"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/email_register_button"
-                style="actionButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textAlignment="center"
-                android:text="@string/register"
-                android:textStyle="bold" />
+            </LinearLayout>
+        </RelativeLayout>
 
-            <Button
-                android:id="@+id/b_quick_login"
-                style="actionButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textAlignment="center"
-                android:text="Patient Login (Debug)"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/b_quick_login_doctor"
-                style="actionButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textAlignment="center"
-                android:text="Doctor Login (Debug)"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/login_bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
     </RelativeLayout>
 </RelativeLayout>
