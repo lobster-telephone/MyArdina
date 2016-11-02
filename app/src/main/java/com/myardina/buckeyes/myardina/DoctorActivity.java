@@ -34,8 +34,10 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor);
+        //adds custom toolbar with ardina material design
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        //creates database instance
         mRef = FirebaseDatabase.getInstance();
         mUsersTable = mRef.getReference().child("Users");
         final String userId = (String) this.getIntent().getExtras().get("UserId");
@@ -72,6 +74,7 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
             public void onCancelled(DatabaseError databaseError) {}
         });
 
+        //setup for doctor availability spinner
         doctor_availability_spinner = (Spinner) findViewById(R.id.spinner_doctor_availability);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -80,6 +83,7 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         doctor_availability_spinner.setAdapter(adapter);
+        //creates listener for spinner
         doctor_availability_spinner.setOnItemSelectedListener(this);
     }
 
@@ -121,7 +125,7 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
         switch (adapterView.getId()) {
-            //if yes is selected doctor is available
+            //depending on availability spinner, value is set in the database
             case R.id.spinner_doctor_availability:
                 if (position == 0) {
                     mChildRef.child("Available").setValue("Y");

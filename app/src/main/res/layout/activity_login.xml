@@ -3,48 +3,30 @@
     android:layout_height="match_parent"
     android:background="@drawable/ardina_login">
 
-
-    <include
-        android:id="@+id/app_bar"
-        layout="@layout/app_bar" />
-
-    <RelativeLayout
-        android:layout_below="@id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
-        <RelativeLayout
-            android:id="@+id/login_top_bar"
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
-
-            <TextView
-                android:id="@+id/login_top_bar_text"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="15dp"
-                android:keepScreenOn="true"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
         <RelativeLayout
             android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
             android:layout_alignParentBottom="true"
-            android:layout_below="@+id/login_top_bar">
+            >
+
+            <RelativeLayout
+                android:id="@+id/login_bottom_bar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true">
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/email_login_form"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_above="@id/login_bottom_bar"
+                android:layout_marginStart="@dimen/login_form_margin_left"
+                android:layout_marginLeft="@dimen/login_form_margin_left"
+                android:layout_marginEnd="@dimen/login_form_margin_right"
+                android:layout_marginRight="@dimen/login_form_margin_right"
+                android:layout_marginBottom="@dimen/login_form_margin_bottom"
                 android:orientation="vertical">
 
                 <include
@@ -62,49 +44,63 @@
                         style="actionButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginRight="5dp"
                         android:layout_marginTop="16dp"
                         android:layout_weight="1"
+                        android:background="@drawable/login_auth_buttons"
                         android:padding="5dp"
                         android:text="@string/action_sign_in"
                         android:textAlignment="center"
-                        android:textStyle="bold" />
+                        android:textColor="@color/whitePrimaryText"
+                         />
 
                     <Button
                         android:id="@+id/email_register_button"
                         style="actionButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
                         android:layout_marginTop="16dp"
                         android:layout_weight="1"
+                        android:background="@drawable/login_auth_buttons"
                         android:padding="5dp"
                         android:text="@string/register"
                         android:textAlignment="center"
-                        android:textStyle="bold" />
+                        android:textColor="@color/whitePrimaryText"
+                         />
                 </LinearLayout>
 
-
-                <Button
-                    android:id="@+id/b_quick_login"
-                    style="actionButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Patient Login (Debug)"
-                    android:textAlignment="center"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/b_quick_login_doctor"
-                    style="actionButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Doctor Login (Debug)"
-                    android:textAlignment="center"
-                    android:textStyle="bold" />
-
             </LinearLayout>
+
+
+            <!-- TODO remove these buttons -->
+            <Button
+                android:id="@+id/b_quick_login_doctor"
+                style="actionButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/email_login_form"
+                android:layout_marginTop="16dp"
+                android:text="Doctor Login (Debug)"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/b_quick_login"
+                style="actionButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_above="@id/b_quick_login_doctor"
+                android:text="Patient Login (Debug)"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+
+
+
         </RelativeLayout>
 
-    </RelativeLayout>
 </RelativeLayout>

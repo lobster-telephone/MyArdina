@@ -7,4 +7,9 @@
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
+
+    <!-- Ardina Customizations for portrait -->
+    <dimen name="login_form_margin_left">50dp</dimen>
+    <dimen name="login_form_margin_right">50dp</dimen>
+    <dimen name="login_form_margin_bottom">10dp</dimen>
 </resources>

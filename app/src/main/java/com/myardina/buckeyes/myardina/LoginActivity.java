@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -47,15 +49,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("onCreate method for LoginActivity being called");
         super.onCreate(savedInstanceState);
+        //Remove title bar
+        this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        //Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
         mEmailView.setOnFocusChangeListener(this);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnFocusChangeListener(this);
-
+        //login and register buttons and its listeners
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(this);
         Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
