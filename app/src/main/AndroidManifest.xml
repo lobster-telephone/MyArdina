@@ -14,44 +14,54 @@
     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity">
+        android:supportsRtl="true">
+        <activity android:name=".Activity.SplashActivity"
+            android:theme="@style/AppTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Activity.LoginActivity"
+            android:theme="@style/AppTheme" >
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
-            android:label="@string/title_activity_register" />
+            android:name=".Activity.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:theme="@style/AppTheme" />
         <activity
-            android:name=".DoctorActivity"
-            android:label="@string/title_activity_doctor" />
+            android:name=".Activity.DoctorActivity"
+            android:label="@string/title_activity_doctor"
+            android:theme="@style/AppTheme" />
         <activity
-            android:name=".SymptomsActivity"
-            android:label="@string/title_activity_symptoms" />
+            android:name=".Activity.SymptomsActivity"
+            android:label="@string/title_activity_symptoms"
+            android:theme="@style/AppTheme" />
         <activity
-            android:name=".PatientPaymentActivity"
-            android:label="@string/title_activity_payment" />
+            android:name=".Activity.PatientPaymentActivity"
+            android:label="@string/title_activity_payment"
+            android:theme="@style/AppTheme" />
         <activity
-            android:name=".TeleMedicineActivity"
-            android:label="@string/title_activity_tele_medicine" />
+            android:name=".Activity.TeleMedicineActivity"
+            android:label="@string/title_activity_tele_medicine"
+            android:theme="@style/AppTheme" />
         <activity
-            android:name=".DoctorsAvailable"
+            android:name=".Activity.DoctorsAvailableActivity"
             android:label="@string/title_activity_doctors_available"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activity.AdditionalInformationActivity"
+            android:label="@string/title_activity_additional_information"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

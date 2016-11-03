@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.myardina.buckeyes.myardina.SymptomsActivity">
+    tools:context=".Activity.SymptomsActivity">
 
     <include android:id="@+id/app_bar"
         layout="@layout/app_bar"/>

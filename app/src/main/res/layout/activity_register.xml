@@ -79,23 +79,23 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/etFirstName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_first_name"
-                android:inputType="textPersonName"
-                android:maxLines="1"
-                android:singleLine="true" />
+            <!--<EditText-->
+                <!--android:id="@+id/etFirstName"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/prompt_first_name"-->
+                <!--android:inputType="textPersonName"-->
+                <!--android:maxLines="1"-->
+                <!--android:singleLine="true" />-->
 
-            <EditText
-                android:id="@+id/etLastName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_last_name"
-                android:inputType="textPersonName"
-                android:maxLines="1"
-                android:singleLine="true" />
+            <!--<EditText-->
+                <!--android:id="@+id/etLastName"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/prompt_last_name"-->
+                <!--android:inputType="textPersonName"-->
+                <!--android:maxLines="1"-->
+                <!--android:singleLine="true" />-->
 
             <EditText
                 android:id="@+id/email"
@@ -156,5 +156,6 @@
         android:id="@+id/register_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true"></RelativeLayout>
+        android:layout_alignParentBottom="true">
+    </RelativeLayout>
 </RelativeLayout>

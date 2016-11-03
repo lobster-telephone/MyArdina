@@ -1,11 +1,10 @@
-package com.myardina.buckeyes.myardina;
+package com.myardina.buckeyes.myardina.Activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -15,10 +14,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.myardina.buckeyes.myardina.Common.CommonConstants;
+import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.R;
 
 public class TeleMedicineActivity extends AppCompatActivity  {
 
-    private static final String LOG_TELE_MEDICINE = "TELE_MEDICINE_ACTIVITY";
+    private static final String LOG_TAG = "TELE_MEDICINE_ACTIVITY";
 
     private FirebaseDatabase database;
     private DatabaseReference ref;
@@ -27,24 +29,22 @@ public class TeleMedicineActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tele_medicine);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
+        Log.d(LOG_TAG, "Entering onCreate...");
+
         database = FirebaseDatabase.getInstance();
-        ref = database.getReference("Users");
+        ref = database.getReference(CommonConstants.USERS_TABLE);
 
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
                 UserDTO user = dataSnapshot.getValue(UserDTO.class);
-                Log.d(LOG_TELE_MEDICINE, "UserId: " + user.getUserId());
-                Log.d(LOG_TELE_MEDICINE, "Previous Post ID: " + prevChildKey);
+                Log.d(LOG_TAG, "UserId: " + user.getUserId());
+                Log.d(LOG_TAG, "Previous Post ID: " + prevChildKey);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
-                DatabaseReference user = ref.child(prevChildKey);
-//                sendNotification();
-                Log.d(LOG_TELE_MEDICINE, "Previous Post ID: " + prevChildKey);}
+                Log.d(LOG_TAG, "Previous Post ID: " + prevChildKey);}
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {}
@@ -56,70 +56,13 @@ public class TeleMedicineActivity extends AppCompatActivity  {
             public void onCancelled(DatabaseError databaseError) {}
         });
 
-//        Button bCall = (Button) findViewById(R.id.bCall);
-//        bCall.setOnClickListener(this);
-//
-//        Button bNotify = (Button) findViewById(R.id.bNotify);
-//        bNotify.setOnClickListener(this);
-
         // add PhoneStateListener
         PhoneCallListener phoneListener = new PhoneCallListener();
         TelephonyManager telephonyManager = (TelephonyManager) this
                 .getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(phoneListener,PhoneStateListener.LISTEN_CALL_STATE);
+        Log.d(LOG_TAG, "Exiting onCreate...");
     }
-
-//    @Override
-//    public void onClick(View v) {
-//        int view = v.getId();
-//        switch(view) {
-//            case R.id.bCall:
-//                Intent callIntent = new Intent(Intent.ACTION_DIAL);
-//                callIntent.setData(Uri.parse("tel:6145371807"));
-//                TeleMedicineActivity.this.startActivity(callIntent);
-//                break;
-//            case R.id.bNotify:
-//                sendNotification();
-//                break;
-//            default:
-//                break;
-//        }
-//    }
-
-//    private void sendNotification() {
-//
-//        // Gets an instance of the NotificationManager service
-//        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        Intent acceptIntent = new Intent(Intent.ACTION_CALL);
-//        acceptIntent.setData(Uri.parse("tel:6145371807"));
-//        PendingIntent pendingAcceptIntent = PendingIntent.getActivity(this, 0, acceptIntent, 0);
-//
-//        Intent declineIntent = new Intent(this, TeleMedicineActivity.class);
-//        PendingIntent pendingDeclineIntent = PendingIntent.getActivity(this, 0, declineIntent, 0);
-//
-//        // Create the reply action and add the remote input.
-//
-//        //Get an instance of NotificationManager
-//        NotificationCompat.Builder mBuilder =
-//                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-//                        .setSmallIcon(R.drawable.splash)
-//                        .setContentTitle("My notification")
-//                        .setContentText("Hello World!")
-//                        .addAction(R.drawable.splash, "ACCEPT", pendingAcceptIntent)
-//                        .addAction(R.drawable.splash, "DECLINE", pendingDeclineIntent);
-//
-//        //mBuilder.setContentIntent(pendingIntent);
-//
-//        // When you issue multiple notifications about the same type of event, it’s best practice for
-//        // your app to try to update an existing notification with this new information, rather than
-//        // immediately creating a new notification. If you want to update this notification at a
-//        // later date, you need to assign it an ID. You can then use this ID whenever you issue a
-//        // subsequent notification. If the previous notification is still visible, the system will
-//        // update this existing notification, rather than create a new one. In this example, the
-//        // notification’s ID is 001
-//        mNotificationManager.notify(1, mBuilder.build());
-//    }
 
     //monitor phone call activities
     private class PhoneCallListener extends PhoneStateListener {

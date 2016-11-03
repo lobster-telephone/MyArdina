@@ -7,8 +7,7 @@
             android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            >
+            android:layout_alignParentBottom="true" >
 
             <RelativeLayout
                 android:id="@+id/login_bottom_bar"
@@ -27,7 +26,7 @@
                 android:layout_marginEnd="@dimen/login_form_margin_right"
                 android:layout_marginRight="@dimen/login_form_margin_right"
                 android:layout_marginBottom="@dimen/login_form_margin_bottom"
-                android:orientation="vertical">
+                android:orientation="vertical" >
 
                 <include
                     android:id="@+id/login_info"
@@ -37,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2" >
 
                     <Button
                         android:id="@+id/email_sign_in_button"
@@ -52,8 +51,7 @@
                         android:padding="5dp"
                         android:text="@string/action_sign_in"
                         android:textAlignment="center"
-                        android:textColor="@color/whitePrimaryText"
-                         />
+                        android:textColor="@color/whitePrimaryText" />
 
                     <Button
                         android:id="@+id/email_register_button"
@@ -68,12 +66,10 @@
                         android:padding="5dp"
                         android:text="@string/register"
                         android:textAlignment="center"
-                        android:textColor="@color/whitePrimaryText"
-                         />
+                        android:textColor="@color/whitePrimaryText" />
                 </LinearLayout>
 
             </LinearLayout>
-
 
             <!-- TODO remove these buttons -->
             <Button
@@ -97,9 +93,6 @@
                 android:text="Patient Login (Debug)"
                 android:textAlignment="center"
                 android:textStyle="bold" />
-
-
-
 
         </RelativeLayout>
 

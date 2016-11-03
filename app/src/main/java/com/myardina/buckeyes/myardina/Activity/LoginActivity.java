@@ -1,4 +1,4 @@
-package com.myardina.buckeyes.myardina;
+package com.myardina.buckeyes.myardina.Activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,12 +6,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,7 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.myardina.buckeyes.myardina.Common.Utility.CommonConstants;
+import com.myardina.buckeyes.myardina.Common.CommonConstants;
+import com.myardina.buckeyes.myardina.DAO.UserDAO;
+import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.R;
 
 
 /**
@@ -34,49 +35,53 @@ import com.myardina.buckeyes.myardina.Common.Utility.CommonConstants;
  */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
-    private static final String LOG_LOGIN_ACTIVITY = "LOG_LOGIN_ACTIVITY";
+    private static final String LOG_TAG = "LOG_LOGIN_ACTIVITY";
 
     private UserLoginTask mAuthTask = null;
+
+    // Data information objects
+    private UserDTO mUserDTO;
+    private UserDAO mUserDAO;
 
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
-    private FirebaseDatabase mRef;
+
     private DatabaseReference mUsersTable;
-    private DatabaseReference mChildRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("onCreate method for LoginActivity being called");
+        Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
-        //Remove title bar
-        this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        //Remove notification bar
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
         mEmailView.setOnFocusChangeListener(this);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnFocusChangeListener(this);
-        //login and register buttons and its listeners
+
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(this);
         Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
         mEmailRegisterButton.setOnClickListener(this);
 
-        mRef = FirebaseDatabase.getInstance();
-        mUsersTable = mRef.getReference().child("Users");
+        FirebaseDatabase mRef = FirebaseDatabase.getInstance();
+        mUsersTable = mRef.getReference().child(CommonConstants.USERS_TABLE);
+        mUserDTO = new UserDTO();
+        mUserDAO = new UserDAO();
 
-        // TODO: DEBUG BUTTON ! REMOVE BEFORE DEPLOYING
+        // TODO: DEBUG BUTTONS ! REMOVE BEFORE DEPLOYING
         Button bQuickLogin = (Button) findViewById(R.id.b_quick_login);
         bQuickLogin.setOnClickListener(this);
         Button bQuickLoginDoctor = (Button) findViewById(R.id.b_quick_login_doctor);
         bQuickLoginDoctor.setOnClickListener(this);
+        Log.d(LOG_TAG, "Exiting onCreate...");
     }
 
     @Override
     public void onClick(View v) {
+        Log.d(LOG_TAG, "Entering onClick...");
         int id = v.getId();
         switch(id) {
             case R.id.email_sign_in_button:
@@ -91,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 LoginActivity.this.startActivity(registerActivity);
                 break;
             case R.id.b_quick_login:
-                mEmailView.setText("tylacks@gmail.com");
+                mEmailView.setText("p@m.com");
                 mPasswordView.setText("Dummy1234");
                 attemptLogin();
                 break;
@@ -104,10 +109,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             default:
                 break;
         }
+        Log.d(LOG_TAG, "Exiting onClick...");
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        Log.d(LOG_TAG, "Entering onFocusChange...");
         int id = v.getId();
         if (!hasFocus) {
             switch (id) {
@@ -121,6 +128,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     break;
             }
         }
+        Log.d(LOG_TAG, "Exiting onFocusChange...");
     }
 
     /**
@@ -129,6 +137,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        Log.d(LOG_TAG, "Entering attemptLogin...");
         if (mAuthTask != null) {
             return;
         }
@@ -141,10 +150,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        View focusView = null;
+        View focusView;
 
         boolean validPassword = validatePassword(password);
-        focusView = validPassword ? mPasswordView : focusView;
+        focusView = validPassword ? mPasswordView : null;
 
         boolean validEmail = validateEmail(email);
         focusView = validEmail ? mEmailView : focusView;
@@ -159,9 +168,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mAuthTask.execute((Void) null);
             mAuthTask = null; //important do not remove
         }
+        Log.d(LOG_TAG, "Exiting attemptLogin...");
     }
 
     private boolean validatePassword(String password) {
+        Log.d(LOG_TAG, "Entering validatePassword...");
         boolean result = false;
         // Check for a valid password.
         if (TextUtils.isEmpty(password)) {
@@ -171,10 +182,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mPasswordView.setError(getString(R.string.error_invalid_password));
             result = true;
         }
+        Log.d(LOG_TAG, "Exiting validatePassword...");
         return result;
     }
 
     private boolean validateEmail(String email) {
+        Log.d(LOG_TAG, "Entering validateEmail...");
         boolean result = false;
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
@@ -184,6 +197,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mEmailView.setError(getString(R.string.error_invalid_email));
             result = true;
         }
+        Log.d(LOG_TAG, "Exiting validateEmail...");
         return result;
     }
 
@@ -215,6 +229,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @SuppressWarnings("unchecked")
         @Override
         protected Boolean doInBackground(Void... params) {
+            Log.d(LOG_TAG, "Entering doInBackground...");
             Task<AuthResult> login_task  = auth.signInWithEmailAndPassword(mEmail, mPassword);
             OnSuccessListener login_success = new OnSuccessListener() {
                 @Override
@@ -222,47 +237,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     mUsersTable.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            boolean found = false;
-                            String userId = "";
-                            for (DataSnapshot user : dataSnapshot.getChildren()) {
-                                for (DataSnapshot userInfo : user.getChildren()) {
-                                    if (TextUtils.equals("UserId", userInfo.getKey())) {
-                                        userId = userInfo.getValue().toString();
-                                        if (TextUtils.equals(auth.getCurrentUser().getUid(), userId)) {
-                                            found = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (found) {
-                                    for (DataSnapshot userInfo : user.getChildren()) {
-                                        if (TextUtils.equals("Doctor", userInfo.getKey())) {
-                                            String doctor = userInfo.getValue().toString();
-                                            if (TextUtils.equals(doctor, "Y")) {
-                                                Intent doctorActivity = new Intent(LoginActivity.this, DoctorActivity.class);
-                                                doctorActivity.putExtra("UserId", user.getKey());
-                                                LoginActivity.this.startActivity(doctorActivity);
-                                            }
-                                        }
-                                    }
-                                    break;
-                                }
+                            Log.d(LOG_TAG, "Entering onDataChange...");
+                            mUserDTO = mUserDAO.retrieveUserFromDataSnapshot(dataSnapshot, true);
+                            Intent nextActivity;
+                            if (mUserDTO.isDoctor()) {
+                                nextActivity = new Intent(LoginActivity.this, DoctorActivity.class);
+                            } else {
+                                nextActivity = new Intent(LoginActivity.this, SymptomsActivity.class);
                             }
+                            nextActivity.putExtra(CommonConstants.USER_DTO, mUserDTO);
+                            mUsersTable.removeEventListener(this);
+                            Log.d(LOG_TAG, "Exiting onDataChange...");
+                            LoginActivity.this.startActivity(nextActivity);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {}
                     });
-                    LoginActivity.this.startActivity(new Intent(LoginActivity.this, SymptomsActivity.class));
                 }
             };
             OnFailureListener login_failure = new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    Log.d(LOG_TAG, "Entering onFailure...");
                     // there was an error
                     Toast created_user_toast = Toast.makeText(mContext, "User " + mEmail + " cannot be logged in. Try again!", Toast.LENGTH_SHORT);
                     created_user_toast.setGravity(Gravity.CENTER, 0, 0);
                     created_user_toast.show();
+                    Log.d(LOG_TAG, "Exiting onFailure...");
                 }
             };
 
@@ -284,7 +286,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    // Implement the animation for the logo from the center of the screen here
+    /**
+     **************************
+     *  ACTIVITY STATE LOGIC  *
+     **************************
+     */
+
     @Override
     protected void onStart(){
         System.out.println("onStart method for LoginActivity being called");

@@ -1,23 +1,29 @@
-package com.myardina.buckeyes.myardina;
+package com.myardina.buckeyes.myardina.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.firebase.client.Firebase;
+import com.myardina.buckeyes.myardina.R;
 
 /**
  * Activity for the splash screen
  */
 
 public class SplashActivity extends AppCompatActivity {
+    private static final String LOG_TAG = "SPLASH_ACTIVITY";
+
     Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(LOG_TAG, "Entering onCreate...");
+
         Firebase.setAndroidContext(this);
         //Remove title bar
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -39,6 +45,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
         splashTimer.start();
+        Log.d(LOG_TAG, "Exiting onCreate...");
     }
 
     @Override

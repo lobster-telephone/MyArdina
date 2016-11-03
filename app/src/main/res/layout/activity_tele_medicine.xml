@@ -3,17 +3,9 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <!--<Button-->
-        <!--android:id="@+id/bCall"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/call_number" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/bNotify"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Send Notification" />-->
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar" />
 
     <TextView
         android:layout_width="match_parent"

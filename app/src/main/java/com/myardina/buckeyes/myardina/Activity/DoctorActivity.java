@@ -1,4 +1,4 @@
-package com.myardina.buckeyes.myardina;
+package com.myardina.buckeyes.myardina.Activity;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,8 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,46 +21,45 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.myardina.buckeyes.myardina.Common.CommonConstants;
+import com.myardina.buckeyes.myardina.DAO.UserDAO;
+import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.R;
 
-public class DoctorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class DoctorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
-    private static final String LOG_DOCTOR_ACTIVITY = "LOG_DOCTOR_ACTIVITY";
+    private static final String LOG_TAG = "DOCTOR_ACTIVITY";
 
-    private FirebaseDatabase mRef;
-    private DatabaseReference mUsersTable;
-    private DatabaseReference mChildRef;
-    private Spinner doctor_availability_spinner;
+    // Data information objects
+    private UserDTO mUserDTO;
+    private UserDAO mUserDAO;
+
+    private Spinner mDoctorAvailabilitySpinner;
+    private boolean mAvailabilitySpinnerSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor);
-        //adds custom toolbar with ardina material design
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
-        //creates database instance
-        mRef = FirebaseDatabase.getInstance();
-        mUsersTable = mRef.getReference().child("Users");
-        final String userId = (String) this.getIntent().getExtras().get("UserId");
-        mChildRef = mUsersTable.child(userId);
+
+        FirebaseDatabase mRef = FirebaseDatabase.getInstance();
+        DatabaseReference mUsersTable = mRef.getReference().child(CommonConstants.USERS_TABLE);
+
+        mUserDTO = (UserDTO) getIntent().getExtras().get(CommonConstants.USER_DTO);
+        mUserDAO = new UserDAO();
+
         mUsersTable.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {}
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
-                if (TextUtils.equals(userId, dataSnapshot.getKey())) {
-                    String requested = "N";
-                    String requestedPhoneNumber = "";
-                    for (DataSnapshot userInfo : dataSnapshot.getChildren()) {
-                        if (TextUtils.equals("Requested", userInfo.getKey())) {
-                             requested = userInfo.getValue().toString();
-                        } else if (TextUtils.equals("RequesterPhoneNumber", userInfo.getKey())) {
-                            requestedPhoneNumber = userInfo.getValue().toString();
-                        }
-                    }
-                    if (TextUtils.equals(requested, "Y")) {
-                        sendNotification(requestedPhoneNumber);
+                UserDTO userChanged = mUserDAO.retrieveUserFromDataSnapshot(dataSnapshot, false);
+                if (TextUtils.equals(mUserDTO.getUserId(), userChanged.getUserId())) {
+                    mUserDTO = userChanged;
+                    if (mUserDTO.isRequested()) {
+                        sendNotification(mUserDTO.getRequesterPhoneNumber());
                     }
                 }
             }
@@ -74,20 +74,22 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
             public void onCancelled(DatabaseError databaseError) {}
         });
 
-        //setup for doctor availability spinner
-        doctor_availability_spinner = (Spinner) findViewById(R.id.spinner_doctor_availability);
+        mDoctorAvailabilitySpinner = (Spinner) findViewById(R.id.spinner_doctor_availability);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.doctor_availability_spinner_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        doctor_availability_spinner.setAdapter(adapter);
-        //creates listener for spinner
-        doctor_availability_spinner.setOnItemSelectedListener(this);
+        mDoctorAvailabilitySpinner.setAdapter(adapter);
+        mDoctorAvailabilitySpinner.setOnItemSelectedListener(this);
+        mDoctorAvailabilitySpinner.setOnTouchListener(this);
+        mAvailabilitySpinnerSelected = false;
+        Log.d(LOG_TAG, "Exiting onCreate...");
     }
 
     private void sendNotification(String phoneNumber) {
+        Log.d(LOG_TAG, "Entering sendNotification...");
 
         // Gets an instance of the NotificationManager service
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -96,8 +98,8 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
         acceptIntent.setData(Uri.parse("tel:" + phoneNumber));
         PendingIntent pendingAcceptIntent = PendingIntent.getActivity(this, 0, acceptIntent, 0);
 
-        Intent declineIntent = new Intent(this, TeleMedicineActivity.class);
-        PendingIntent pendingDeclineIntent = PendingIntent.getActivity(this, 0, declineIntent, 0);
+//        Intent declineIntent = new Intent(this, TeleMedicineActivity.class);
+//        PendingIntent pendingDeclineIntent = PendingIntent.getActivity(this, 0, declineIntent, 0);
 
         // Create the reply action and add the remote input.
 
@@ -111,31 +113,54 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
 //                        .addAction(R.drawable.splash, "DECLINE", pendingDeclineIntent);
 
         mBuilder.setContentIntent(pendingAcceptIntent);
-
-        // When you issue multiple notifications about the same type of event, it’s best practice for
-        // your app to try to update an existing notification with this new information, rather than
-        // immediately creating a new notification. If you want to update this notification at a
-        // later date, you need to assign it an ID. You can then use this ID whenever you issue a
-        // subsequent notification. If the previous notification is still visible, the system will
-        // update this existing notification, rather than create a new one. In this example, the
-        // notification’s ID is 001
         mNotificationManager.notify(1, mBuilder.build());
+        Log.d(LOG_TAG, "Exiting sendNotification...");
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        Log.d(LOG_TAG, "Entering onItemSelected...");
         switch (adapterView.getId()) {
-            //depending on availability spinner, value is set in the database
+            //if yes is selected doctor is available
             case R.id.spinner_doctor_availability:
-                if (position == 0) {
-                    mChildRef.child("Available").setValue("Y");
-                } else if( position == 1) {
-                    mChildRef.child("Available").setValue("N");
+                if (mAvailabilitySpinnerSelected) {
+                    if (position == 0) {
+                        mUserDTO.setAvailable(true);
+                        mUserDAO.updateDoctorAvailability(mUserDTO);
+                    } else if (position == 1) {
+                        mUserDTO.setAvailable(false);
+                        mUserDAO.updateDoctorAvailability(mUserDTO);
+                    }
+                    mAvailabilitySpinnerSelected = false;
+                } else {
+                    if (mUserDTO.isAvailable()) {
+                        adapterView.setSelection(0);
+                    } else {
+                        adapterView.setSelection(1);
+                    }
                 }
                 break;
+            default:
+                break;
         }
+        Log.d(LOG_TAG, "Exiting onItemSelected...");
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {}
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        Log.d(LOG_TAG, "Entering onTouch...");
+        switch (v.getId()) {
+            //if yes is selected doctor is available
+            case R.id.spinner_doctor_availability:
+                mAvailabilitySpinnerSelected = true;
+                break;
+            default:
+                break;
+        }
+        Log.d(LOG_TAG, "Exiting onTouch...");
+        return false;
+    }
 }

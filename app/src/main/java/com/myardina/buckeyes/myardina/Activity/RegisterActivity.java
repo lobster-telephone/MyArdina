@@ -1,13 +1,14 @@
-package com.myardina.buckeyes.myardina;
+package com.myardina.buckeyes.myardina.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -21,42 +22,48 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.myardina.buckeyes.myardina.Common.Utility.CommonConstants;
+import com.myardina.buckeyes.myardina.Common.CommonConstants;
+import com.myardina.buckeyes.myardina.DAO.UserDAO;
+import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.R;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
+    private static final String LOG_TAG = "REGISTER_ACTIVITY";
+
     private FirebaseDatabase ref;
     private DatabaseReference usersTable;
+    private UserDAO userDAO;
 
     private UserRegisterTask mRegTask = null;
 
     // UI references
-    private EditText mFirstNameView;
-    private EditText mLastNameView;
+//    private EditText mFirstNameView;
+//    private EditText mLastNameView;
     private EditText mEmailView;
     private EditText mEmailConfirmView;
     private EditText mPasswordView;
     private EditText mPasswordConfirmView;
     private RadioButton doctor_button;
     private RadioButton patient_button;
-    boolean doctorCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        //adds custom toolbar with ardina material design
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
+        Log.d(LOG_TAG, "Entering onCreate...");
+
         Bundle extras = this.getIntent().getExtras();
 
         ref = FirebaseDatabase.getInstance();
-        usersTable = ref.getReference("Users");
+        usersTable = ref.getReference(CommonConstants.USERS_TABLE);
 
-        mFirstNameView = (EditText) findViewById(R.id.etFirstName);
-        mFirstNameView.setOnFocusChangeListener(this);
-        mLastNameView = (EditText) findViewById(R.id.etLastName);
-        mLastNameView.setOnFocusChangeListener(this);
+        userDAO = new UserDAO();
+
+//        mFirstNameView = (EditText) findViewById(R.id.etFirstName);
+//        mFirstNameView.setOnFocusChangeListener(this);
+//        mLastNameView = (EditText) findViewById(R.id.etLastName);
+//        mLastNameView.setOnFocusChangeListener(this);
 
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
@@ -80,10 +87,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         doctor_button = (RadioButton) findViewById(R.id.radio_doctor);
         patient_button = (RadioButton) findViewById(R.id.radio_patient);
+        Log.d(LOG_TAG, "Exiting onCreate...");
     }
 
     @Override
     public void onClick(View v) {
+        Log.d(LOG_TAG, "Entering onClick...");
         int id = v.getId();
         switch (id) {
             case R.id.email_register_button:
@@ -92,10 +101,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             default:
                 break;
         }
+        Log.d(LOG_TAG, "Exiting onClick...");
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        Log.d(LOG_TAG, "Entering onFocusChange...");
         int id = v.getId();
         if (!hasFocus) {
             String original;
@@ -117,15 +128,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     confirm = mPasswordConfirmView.getText().toString();
                     validateConfirmField(original, confirm, mPasswordConfirmView, getString(R.string.error_password_mismatch));
                     break;
-                case R.id.etFirstName:
-                    validateName(mFirstNameView.getText().toString());
-                    break;
-                case R.id.etLastName:
-                    validateName(mLastNameView.getText().toString());
                 default:
                     break;
             }
         }
+        Log.d(LOG_TAG, "Exiting onFocusChange...");
     }
 
     /**
@@ -135,17 +142,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * int l_r is 0 if login 1 if register
      */
     private void attemptRegister() {
+        Log.d(LOG_TAG, "Entering attemptRegister...");
         // Reset errors.
-        mFirstNameView.setError(null);
-        mLastNameView.setError(null);
         mEmailView.setError(null);
         mEmailConfirmView.setError(null);
         mPasswordView.setError(null);
         mPasswordConfirmView.setError(null);
 
         // Store values at the time of the login attempt.
-        String firstName = mFirstNameView.getText().toString();
-        String lastName = mLastNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String emailConfirm = mEmailConfirmView.getText().toString();
         String password = mPasswordView.getText().toString();
@@ -167,11 +171,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         boolean validEmail = validateEmail(email);
         focusView = validEmail ? mEmailView : focusView;
 
-        boolean validLastName = validateName(lastName);
-        focusView = validLastName ? mLastNameView : focusView;
-
-        boolean validFirstName = validateName(firstName);
-        focusView = validFirstName ? mFirstNameView : focusView;
+        boolean userTypeSelected = patient_button.isSelected() && doctor_button.isSelected();
+        focusView = userTypeSelected ? mPasswordConfirmView : focusView;
 
         if (focusView != null) {
             // There was an error; don't attempt login and focus the first
@@ -185,19 +186,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Intent registerActivity = new Intent(RegisterActivity.this, RegisterActivity.class);
             RegisterActivity.this.startActivity(registerActivity);
         }
-    }
-
-    private boolean validateName(String name) {
-        boolean invalid = false;
-        // Check for a valid name.
-        if (TextUtils.isEmpty(name)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            invalid = true;
-        }
-        return invalid;
+        Log.d(LOG_TAG, "Exiting attemptRegister...");
     }
 
     private boolean validatePassword(String password) {
+        Log.d(LOG_TAG, "Entering validatePassword...");
         boolean invalid = false;
         // Check for a valid password.
         if (TextUtils.isEmpty(password)) {
@@ -210,10 +203,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 invalid = true;
             }
         }
+        Log.d(LOG_TAG, "Exiting validatePassword...");
         return invalid;
     }
 
     private boolean validateEmail(String email) {
+        Log.d(LOG_TAG, "Entering validateEmail...");
         boolean invalid = false;
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
@@ -223,10 +218,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             mEmailView.setError(getString(R.string.error_invalid_email));
             invalid = true;
         }
+        Log.d(LOG_TAG, "Exiting validateEmail...");
         return invalid;
     }
 
     private boolean validateConfirmField(String original, String confirm, EditText field, String invalidFieldMessage) {
+        Log.d(LOG_TAG, "Entering validateConfirmField...");
         boolean invalid = false;
         // Check for a valid password.
         if (TextUtils.isEmpty(confirm)) {
@@ -236,6 +233,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             field.setError(invalidFieldMessage);
             invalid = true;
         }
+        Log.d(LOG_TAG, "Exiting validateConfirmField...");
         return invalid;
     }
 
@@ -244,6 +242,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private String isPasswordValid(String password) {
+        Log.d(LOG_TAG, "Entering isPasswordValid...");
         String error = "";
         if (password.length() <= 5) {
             error = "Password is too short";
@@ -252,6 +251,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         } else if (TextUtils.equals(password, password.toUpperCase())) {
             error = "Password must contain a lower case letter";
         }
+        Log.d(LOG_TAG, "Exiting isPasswordValid...");
         return error;
     }
 
@@ -275,44 +275,56 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         @SuppressWarnings("unchecked")
         @Override
         protected Boolean doInBackground(Void... params) {
+            Log.d(LOG_TAG, "Entering doInBackground...");
             Task register_task = auth.createUserWithEmailAndPassword(mEmail, mPassword);
-            OnSuccessListener login_success = new OnSuccessListener() {
+            OnSuccessListener register_success = new OnSuccessListener() {
                 @Override
                 public void onSuccess(Object o) {
+                    Log.d(LOG_TAG, "Entering onSuccess...");
                     String userId = UserRegisterTask.this.auth.getCurrentUser().getUid();
                     DatabaseReference childRef = RegisterActivity.this.usersTable.push();
-                    childRef.child("UserId").setValue(userId);
-                    childRef.child("FirstName").setValue(mFirstNameView.getText().toString());
-                    childRef.child("LastName").setValue(mLastNameView.getText().toString());
+                    childRef.child(CommonConstants.USER_ID).setValue(userId);
                     boolean doctor = RegisterActivity.this.doctor_button.isChecked();
-                    String isDoctor = doctor ? "Y" : "N";
-                    childRef.child("Doctor").setValue(isDoctor);
-                    childRef.child("RequesterPhoneNumber").setValue("0000000000");
-                    childRef.child("Available").setValue("N");
-                    childRef.child("VerifiedDoctor").setValue("N");
-                    childRef.child("Requested").setValue("N");
+
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setDoctor(doctor);
+                    userDTO.setRequesterPhoneNumber("0000000000");
+                    userDTO.setAvailable(false);
+                    userDTO.setVerifiedDoctor(false);
+                    userDTO.setRequested(false);
+                    userDTO.setEmail(mEmailView.getText().toString());
+                    userDTO.setUserId(userId);
+                    userDTO.setUserKey(childRef.getKey());
+
+                    userDAO.saveRegisterInformationPage(userDTO);
+
+                    SharedPreferences sharedpreferences = getSharedPreferences(CommonConstants.PREFERENCES, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putBoolean(CommonConstants.DOCTOR, doctor);
+                    editor.putString(CommonConstants.USER_ID, userId);
+                    editor.putString(CommonConstants.USER_KEY, childRef.getKey());
+                    editor.commit();
 
                     Intent nextActivity;
-                    if (doctor) {
-                        nextActivity = new Intent(RegisterActivity.this, DoctorActivity.class);
-                        nextActivity.putExtra("UserId", childRef.getKey());
-                    } else {
-                        nextActivity = new Intent(RegisterActivity.this, SymptomsActivity.class);
-                    }
+                    nextActivity = new Intent(RegisterActivity.this, AdditionalInformationActivity.class);
+                    nextActivity.putExtra(CommonConstants.USER_DTO, userDTO);
                     RegisterActivity.this.startActivity(nextActivity);
+                    Log.d(LOG_TAG, "Exiting onSuccess...");
                 }
             };
-            OnFailureListener login_failure = new OnFailureListener() {
+            OnFailureListener register_failure = new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    Log.d(LOG_TAG, "Entering onFailure...");
                     // there was an error
                     Toast created_user_toast = Toast.makeText(mContext, "User " + mEmail + " cannot be created, might exist already, try again!", Toast.LENGTH_SHORT);
                     created_user_toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
                     created_user_toast.show();
+                    Log.d(LOG_TAG, "Exiting onFailure...");
                 }
             };
-            register_task.addOnSuccessListener(login_success);
-            register_task.addOnFailureListener(login_failure);
+            register_task.addOnSuccessListener(register_success);
+            register_task.addOnFailureListener(register_failure);
 
             return true;
         }
@@ -325,22 +337,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void onDoctorPatientButtonClicked(View view) {
-        // Is the button now checked?
-        doctorCheck = ((RadioButton) view).isChecked();
-
+        Log.d(LOG_TAG, "Entering onDoctorPatientButtonClicked...");
         // Check which radio button was clicked
         switch (view.getId()) {
             case R.id.radio_doctor:
-                doctorCheck = true;
                 patient_button.setChecked(false);
                 break;
             case R.id.radio_patient:
-                doctorCheck = false;
                 doctor_button.setChecked(false);
                 break;
         }
+        Log.d(LOG_TAG, "Exiting onDoctorPatientButtonClicked...");
     }
 
+    /**
+     **************************
+     *  ACTIVITY STATE LOGIC  *
+     **************************
+     */
 
     @Override
     protected void onStart() {
