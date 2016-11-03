@@ -30,6 +30,7 @@ public class CommonConstants {
     public static final String LOCATION_COL = "Location";
     public static final String PHONE_NUMBER_COL = "PhoneNumber";
     public static final String USERS_TABLE = "Users";
+    public static final String PAYMENTS_TABLE = "Payments";
 
     // SYMPTOMS CONSTANTS
     public static final String MY_HEAD = "my_head";

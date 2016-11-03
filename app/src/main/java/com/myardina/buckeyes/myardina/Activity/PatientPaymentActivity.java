@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
 import com.myardina.buckeyes.myardina.DTO.UserDTO;
 import com.myardina.buckeyes.myardina.R;
@@ -28,6 +30,8 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
     private static final String LOG_TAG = "PATIENT_PAYMENT";
 
     // Data objects
+    private FirebaseDatabase ref;
+    private DatabaseReference paymentsTable;
     private UserDTO mUserDTO;
 
     private static PayPalConfiguration config;
@@ -118,19 +122,31 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
             PaymentConfirmation confirm = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
             if (confirm != null) {
                 try {
-                    Log.i(LOG_TAG, confirm.toJSONObject().toString(4));
+                    String confirm_str = confirm.toJSONObject().toString(4);
+                    Log.i(LOG_TAG, confirm_str);
 
-                    Toast created_user_toast = Toast.makeText(getApplicationContext(), "Payment successful!", Toast.LENGTH_SHORT);
-                    created_user_toast.setGravity(Gravity.CENTER, 0, 0);
-                    created_user_toast.show();
-
-                    Intent doctorsAvailableActivity = new Intent(PatientPaymentActivity.this, DoctorsAvailableActivity.class);
-                    doctorsAvailableActivity.putExtra(CommonConstants.USER_DTO, mUserDTO);
-                    PatientPaymentActivity.this.startActivity(doctorsAvailableActivity);
 
                     // TODO: send 'confirm' to your server for verification.
                     // see https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
                     // for more details.
+
+                    //confirm payment to our database
+                    ref = FirebaseDatabase.getInstance();
+                    paymentsTable = ref.getReference(CommonConstants.PAYMENTS_TABLE);
+                    DatabaseReference childRef = PatientPaymentActivity.this.paymentsTable.push();
+                    childRef.child("Payment").setValue(confirm);
+                    childRef.child("UserID").setValue(mUserDTO.getUserKey());
+
+                    //toast that says payment successful
+                    Toast created_user_toast = Toast.makeText(getApplicationContext(), "Payment successful!", Toast.LENGTH_SHORT);
+                    created_user_toast.setGravity(Gravity.CENTER, 0, 0);
+                    created_user_toast.show();
+
+                    //gos to doctors available activity
+                    Intent doctorsAvailableActivity = new Intent(PatientPaymentActivity.this, DoctorsAvailableActivity.class);
+                    doctorsAvailableActivity.putExtra(CommonConstants.USER_DTO, mUserDTO);
+                    PatientPaymentActivity.this.startActivity(doctorsAvailableActivity);
+
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "an extremely unlikely failure occurred: ", e);
                 }
