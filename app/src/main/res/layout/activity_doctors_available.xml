@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent">
 
-    <ListView
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar" />
+
+    <RelativeLayout
+        android:id="@+id/doctors_available_title_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lvDoctorsAvailableList"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-</LinearLayout>
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_below="@id/app_bar">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/available_doctors"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/doctors_available_title_container">
+
+        <include
+            android:id="@+id/doctor_availability_list"
+            layout="@layout/doctors_available_listview" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

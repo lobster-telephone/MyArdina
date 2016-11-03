@@ -54,5 +54,6 @@
         <item>Busy</item>
     </string-array>
     <string name="title_activity_doctors_available">DoctorsAvailable</string>
+    <string name="available_doctors">Here is a list of available doctors at this time:</string>
 
 </resources>
