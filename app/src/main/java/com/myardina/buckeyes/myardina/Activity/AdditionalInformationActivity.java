@@ -11,7 +11,8 @@ import android.widget.EditText;
 
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
 import com.myardina.buckeyes.myardina.DAO.UserDAO;
-import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
+import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.R;
 
 public class AdditionalInformationActivity extends AppCompatActivity implements View.OnFocusChangeListener, View.OnClickListener{
@@ -20,7 +21,8 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
 
     // Data access and transfer objects
     private UserDAO mUserDAO;
-    private UserDTO mUserDTO;
+    private PatientDTO mPatientDTO;
+    private DoctorDTO mDoctorDTO;
 
     // UI References
     private EditText mFirstNameView;
@@ -48,10 +50,13 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
 
         // Initialize data objects
         mUserDAO = new UserDAO();
-        mUserDTO = (UserDTO) getIntent().getExtras().get(CommonConstants.USER_DTO);
+        mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
+        if (mPatientDTO == null) {
+            mDoctorDTO = (DoctorDTO) getIntent().getExtras().get(CommonConstants.DOCTOR_DTO);
+        }
 
         // Dynamically display location or phone number based on type of user
-        if(mUserDTO != null && mUserDTO.isDoctor()) {
+        if(mPatientDTO == null) {
             mPhoneNumberView.setVisibility(View.GONE);
         } else {
             mLocationView.setVisibility(View.GONE);
@@ -60,9 +65,9 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
     }
 
     /**
-     **************************
-     *  EVENT LISTENER LOGIC  *
-     **************************
+     *****************************
+     *  UI EVENT LISTENER LOGIC  *
+     *****************************
      */
 
     @Override
@@ -155,9 +160,9 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
             focusView = mLocationView;
         } else if (!validateNormalText(mLastNameView)) {
             focusView = mLocationView;
-        } else if (mUserDTO.isDoctor() && !validateNormalText(mLocationView)) {
+        } else if (mDoctorDTO != null && !validateNormalText(mLocationView)) {
             focusView = mLocationView;
-        } else if (!mUserDTO.isDoctor() && !validatePhoneNumber(mPhoneNumberView)) {
+        } else if (mPatientDTO != null && !validatePhoneNumber(mPhoneNumberView)) {
             focusView = mPhoneNumberView;
         }
 
@@ -167,13 +172,13 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
         } else {
             saveFormInformation();
             Intent nextActivity;
-            if (mUserDTO.isDoctor()) {
+            if (mDoctorDTO != null) {
                 nextActivity = new Intent(AdditionalInformationActivity.this, DoctorActivity.class);
-                nextActivity.putExtra(CommonConstants.USER_ID, mUserDTO.getUserId());
+                nextActivity.putExtra(CommonConstants.DOCTOR_DTO, mDoctorDTO);
             } else {
                 nextActivity = new Intent(AdditionalInformationActivity.this, SymptomsActivity.class);
+                nextActivity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
             }
-            nextActivity.putExtra(CommonConstants.USER_DTO, mUserDTO);
             AdditionalInformationActivity.this.startActivity(nextActivity);
         }
         Log.d(LOG_TAG, "Exiting attemptContinue...");
@@ -181,14 +186,59 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
 
     private void saveFormInformation() {
         Log.d(LOG_TAG, "Entering saveFormInformation...");
-        mUserDTO.setFirstName(mFirstNameView.getText().toString());
-        mUserDTO.setLastName(mLastNameView.getText().toString());
-        if (mUserDTO.isDoctor()) {
-            mUserDTO.setLocation(mLocationView.getText().toString());
+        if (mPatientDTO != null) {
+            mPatientDTO.setFirstName(mFirstNameView.getText().toString());
+            mPatientDTO.setLastName(mLastNameView.getText().toString());
+            mPatientDTO.setPhoneNumber(mPhoneNumberView.getText().toString());
+            mUserDAO.saveAdditionalInformationPatient(mPatientDTO);
         } else {
-            mUserDTO.setPhoneNumber(mPhoneNumberView.getText().toString());
+            mDoctorDTO.setFirstName(mFirstNameView.getText().toString());
+            mDoctorDTO.setLastName(mLastNameView.getText().toString());
+            mDoctorDTO.setLocation(mLocationView.getText().toString());
+            mUserDAO.saveAdditionalInformationDoctor(mDoctorDTO);
         }
-        mUserDAO.saveAdditionalInformation(mUserDTO);
         Log.d(LOG_TAG, "Exiting saveFormInformation...");
+    }
+
+    /**
+     ******************************
+     *  ACTIVITY LIFECYCLE LOGIC  *
+     ******************************
+     */
+
+    @Override
+    protected void onStart() {
+        System.out.println("onStart method for RegisterActivity being called");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart() {
+        System.out.println("onRestart method for RegisterActivity being called");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onPause() {
+        System.out.println("onPause method for RegisterActivity being called");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        System.out.println("onResume method for RegisterActivity being called");
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        System.out.println("onStop method for RegisterActivity being called");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        System.out.println("onDestroy method for RegisterActivity being called");
+        super.onDestroy();
     }
 }

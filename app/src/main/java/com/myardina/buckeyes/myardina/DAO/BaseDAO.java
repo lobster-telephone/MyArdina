@@ -7,7 +7,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
+import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 
 import java.util.Map;
 
@@ -16,7 +17,6 @@ import java.util.Map;
  */
 public class BaseDAO {
     private FirebaseDatabase mRef;
-    private DatabaseReference mTable;
     private FirebaseAuth auth;
 
     public BaseDAO() {
@@ -25,9 +25,9 @@ public class BaseDAO {
     }
 
     /**
-     ******************************
-     *  PRIVATE BACKGROUND LOGIC  *
-     ******************************
+     ******************
+     *  PUBLIC LOGIC  *
+     ******************
      */
 
     protected void insert(Map<String, Object> insertMap, String table, String childId) {
@@ -38,20 +38,36 @@ public class BaseDAO {
         insertUpdateInfo(insertMap, table, childId);
     }
 
-    protected UserDTO retrieve(DataSnapshot dataSnapshot, boolean findChild) {
-        UserDTO userDTO = new UserDTO();
+    protected DoctorDTO retrieveDoctor(DataSnapshot dataSnapshot, boolean findChild) {
+        DoctorDTO doctorDTO = new DoctorDTO();
         if (findChild) {
             for (DataSnapshot user : dataSnapshot.getChildren()) {
                 String userInfoId = user.child(CommonConstants.USER_ID).getValue().toString();
                 if (TextUtils.equals(userInfoId, auth.getCurrentUser().getUid())) {
-                    mapUserDTO(user, userDTO);
+                    mapDoctorDTO(user, doctorDTO);
                     break;
                 }
             }
         } else {
-            mapUserDTO(dataSnapshot, userDTO);
+            mapDoctorDTO(dataSnapshot, doctorDTO);
         }
-        return userDTO;
+        return doctorDTO;
+    }
+
+    protected PatientDTO retrievePatient(DataSnapshot dataSnapshot, boolean findChild) {
+        PatientDTO patientDTO = new PatientDTO();
+        if (findChild) {
+            for (DataSnapshot user : dataSnapshot.getChildren()) {
+                String userInfoId = user.child(CommonConstants.USER_ID).getValue().toString();
+                if (TextUtils.equals(userInfoId, auth.getCurrentUser().getUid())) {
+                    mapPatientDTO(user, patientDTO);
+                    break;
+                }
+            }
+        } else {
+            mapPatientDTO(dataSnapshot, patientDTO);
+        }
+        return patientDTO;
     }
 
     /**
@@ -61,25 +77,32 @@ public class BaseDAO {
      */
 
     private void insertUpdateInfo(Map<String, Object> insertMap, String table, String childId) {
-        mTable = mRef.getReference(table).child(childId);
+        DatabaseReference tableRef = mRef.getReference(table).child(childId);
         for (String key : insertMap.keySet()) {
-            mTable.child(key).setValue(insertMap.get(key));
+            tableRef.child(key).setValue(insertMap.get(key));
         }
     }
 
-    private void mapUserDTO(DataSnapshot user, UserDTO userDTO) {
-        userDTO.setUserKey(user.getKey());
-        userDTO.setUserId(getUserAttribute(user, CommonConstants.USER_ID));
-        userDTO.setFirstName(getUserAttribute(user, CommonConstants.FIRST_NAME_COL));
-        userDTO.setLastName(getUserAttribute(user, CommonConstants.LAST_NAME_COL));
-        userDTO.setPhoneNumber(getUserAttribute(user, CommonConstants.PHONE_NUMBER_COL));
-        userDTO.setEmail(getUserAttribute(user, CommonConstants.EMAIL_COL));
-        userDTO.setLocation(getUserAttribute(user, CommonConstants.LOCATION_COL));
-        userDTO.setRequesterPhoneNumber(getUserAttribute(user, CommonConstants.REQUESTER_PHONE_NUMBER_COL));
-        userDTO.setAvailable(Boolean.valueOf(getUserAttribute(user, CommonConstants.AVAILABLE_COL)));
-        userDTO.setDoctor(Boolean.valueOf(getUserAttribute(user, CommonConstants.DOCTOR_COL)));
-        userDTO.setVerifiedDoctor(Boolean.valueOf(getUserAttribute(user, CommonConstants.VERIFIED_DOCTOR_COL)));
-        userDTO.setRequested(Boolean.valueOf(getUserAttribute(user, CommonConstants.REQUESTED_COL)));
+    private void mapPatientDTO(DataSnapshot user, PatientDTO patientDTO) {
+        patientDTO.setUserKey(user.getKey());
+        patientDTO.setUserId(getUserAttribute(user, CommonConstants.USER_ID));
+        patientDTO.setFirstName(getUserAttribute(user, CommonConstants.FIRST_NAME_COL));
+        patientDTO.setLastName(getUserAttribute(user, CommonConstants.LAST_NAME_COL));
+        patientDTO.setPhoneNumber(getUserAttribute(user, CommonConstants.PHONE_NUMBER_COL));
+        patientDTO.setEmail(getUserAttribute(user, CommonConstants.EMAIL_COL));
+    }
+
+    private void mapDoctorDTO(DataSnapshot user, DoctorDTO doctorDTO) {
+        doctorDTO.setUserKey(user.getKey());
+        doctorDTO.setUserId(getUserAttribute(user, CommonConstants.USER_ID));
+        doctorDTO.setFirstName(getUserAttribute(user, CommonConstants.FIRST_NAME_COL));
+        doctorDTO.setLastName(getUserAttribute(user, CommonConstants.LAST_NAME_COL));
+        doctorDTO.setEmail(getUserAttribute(user, CommonConstants.EMAIL_COL));
+        doctorDTO.setLocation(getUserAttribute(user, CommonConstants.LOCATION_COL));
+        doctorDTO.setRequesterPhoneNumber(getUserAttribute(user, CommonConstants.REQUESTER_PHONE_NUMBER_COL));
+        doctorDTO.setAvailable(Boolean.valueOf(getUserAttribute(user, CommonConstants.AVAILABLE_COL)));
+        doctorDTO.setVerifiedDoctor(Boolean.valueOf(getUserAttribute(user, CommonConstants.VERIFIED_DOCTOR_COL)));
+        doctorDTO.setRequested(Boolean.valueOf(getUserAttribute(user, CommonConstants.REQUESTED_COL)));
     }
 
     private String getUserAttribute(DataSnapshot snapshot, String attribute) {

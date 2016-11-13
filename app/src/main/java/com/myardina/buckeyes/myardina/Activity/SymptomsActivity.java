@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.R;
 
 import java.util.ArrayList;
@@ -24,9 +24,9 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
     private static final String LOG_TAG = "SYMPTOMS_ACTIVITY";
 
     // Data transfer object
-    private UserDTO mUserDTO;
+    private PatientDTO mPatientDTO;
 
-    //list of selected items, for now is in integers referencing the multichoice items in fragment below
+    //list of selected items, for now is in integers referencing the multi choice items in fragment below
     private static ArrayList<Integer> mSelList;
     //this second list will actually keep the text of the symptoms, to be extracted per body part
     private static  ArrayList<String> mSymptoms;
@@ -57,14 +57,14 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
         mSelList = new ArrayList<>();
         mSymptoms = new ArrayList<>();
 
-        mUserDTO = (UserDTO) getIntent().getExtras().get(CommonConstants.USER_DTO);
+        mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
 
     /**
-     **************************
-     *  EVENT LISTENER LOGIC  *
-     **************************
+     *****************************
+     *  UI EVENT LISTENER LOGIC  *
+     *****************************
      */
 
     @Override
@@ -91,7 +91,7 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.b_continue_to_payment:
                 Intent paymentActivity = new Intent(SymptomsActivity.this, PatientPaymentActivity.class);
-                paymentActivity.putExtra(CommonConstants.USER_DTO, mUserDTO);
+                paymentActivity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
                 SymptomsActivity.this.startActivity(paymentActivity);
                 break;
             default:
@@ -124,7 +124,7 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
 
         //list of symptoms options, for now arbitrary, eventually will have to extract from database
         String[] symptomsList = { "Migraine", "Sore Throat", "Pink Eye", "Ear Ache" };
-        //will eventually be replaced by dynamically generated list extracted from firebase based on the body part
+        //will eventually be replaced by dynamically generated list extracted from Firebase based on the body part
         boolean[] bl = new boolean[symptomsList.length];
 
         @Override
@@ -151,7 +151,7 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
                                     if (mSelList.size()==3){
                                         int removed = mSelList.remove(0);
                                         mSymptoms.remove(0);
-                                        //uncheck the the first checkbox selected too
+                                        //un check the the first checkbox selected too
                                         bl[removed] = false;
                                         ((AlertDialog) arg0).getListView().setItemChecked(removed, false);
                                     }
@@ -182,5 +182,47 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
             // Show the AlertDialog
             return alertDialogBuilder.show();
         }
+    }
+
+    /**
+     ******************************
+     *  ACTIVITY LIFECYCLE LOGIC  *
+     ******************************
+     */
+
+    @Override
+    protected void onStart() {
+        System.out.println("onStart method for RegisterActivity being called");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart() {
+        System.out.println("onRestart method for RegisterActivity being called");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onPause() {
+        System.out.println("onPause method for RegisterActivity being called");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        System.out.println("onResume method for RegisterActivity being called");
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        System.out.println("onStop method for RegisterActivity being called");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        System.out.println("onDestroy method for RegisterActivity being called");
+        super.onDestroy();
     }
 }

@@ -23,7 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
 import com.myardina.buckeyes.myardina.DAO.UserDAO;
-import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.R;
 
 public class DoctorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
@@ -31,11 +31,13 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
     private static final String LOG_TAG = "DOCTOR_ACTIVITY";
 
     // Data information objects
-    private UserDTO mUserDTO;
+    private DoctorDTO mDoctorDTO;
     private UserDAO mUserDAO;
 
-    private Spinner mDoctorAvailabilitySpinner;
     private boolean mAvailabilitySpinnerSelected;
+
+    private DatabaseReference mDoctorsTable;
+    private ChildEventListener mChildEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,46 +46,23 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
         setContentView(R.layout.activity_doctor);
 
         FirebaseDatabase mRef = FirebaseDatabase.getInstance();
-        DatabaseReference mUsersTable = mRef.getReference().child(CommonConstants.USERS_TABLE);
+        mDoctorsTable = mRef.getReference().child(CommonConstants.DOCTORS_TABLE);
 
-        mUserDTO = (UserDTO) getIntent().getExtras().get(CommonConstants.USER_DTO);
+        initializeDBListeners();
+
+        mDoctorDTO = (DoctorDTO) getIntent().getExtras().get(CommonConstants.DOCTOR_DTO);
         mUserDAO = new UserDAO();
 
-        mUsersTable.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {}
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
-                UserDTO userChanged = mUserDAO.retrieveUserFromDataSnapshot(dataSnapshot, false);
-                if (TextUtils.equals(mUserDTO.getUserId(), userChanged.getUserId())) {
-                    mUserDTO = userChanged;
-                    if (mUserDTO.isRequested()) {
-                        sendNotification(mUserDTO.getRequesterPhoneNumber());
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {}
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
-
-        mDoctorAvailabilitySpinner = (Spinner) findViewById(R.id.spinner_doctor_availability);
+        Spinner doctorAvailabilitySpinner = (Spinner) findViewById(R.id.spinner_doctor_availability);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.doctor_availability_spinner_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        mDoctorAvailabilitySpinner.setAdapter(adapter);
-        mDoctorAvailabilitySpinner.setOnItemSelectedListener(this);
-        mDoctorAvailabilitySpinner.setOnTouchListener(this);
+        doctorAvailabilitySpinner.setAdapter(adapter);
+        doctorAvailabilitySpinner.setOnItemSelectedListener(this);
+        doctorAvailabilitySpinner.setOnTouchListener(this);
         mAvailabilitySpinnerSelected = false;
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
@@ -125,15 +104,15 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
             case R.id.spinner_doctor_availability:
                 if (mAvailabilitySpinnerSelected) {
                     if (position == 0) {
-                        mUserDTO.setAvailable(true);
-                        mUserDAO.updateDoctorAvailability(mUserDTO);
+                        mDoctorDTO.setAvailable(true);
+                        mUserDAO.updateDoctorAvailability(mDoctorDTO);
                     } else if (position == 1) {
-                        mUserDTO.setAvailable(false);
-                        mUserDAO.updateDoctorAvailability(mUserDTO);
+                        mDoctorDTO.setAvailable(false);
+                        mUserDAO.updateDoctorAvailability(mDoctorDTO);
                     }
                     mAvailabilitySpinnerSelected = false;
                 } else {
-                    if (mUserDTO.isAvailable()) {
+                    if (mDoctorDTO.isAvailable()) {
                         adapterView.setSelection(0);
                     } else {
                         adapterView.setSelection(1);
@@ -162,5 +141,79 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
         }
         Log.d(LOG_TAG, "Exiting onTouch...");
         return false;
+    }
+
+    private void initializeDBListeners() {
+        mChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                DoctorDTO userChanged = mUserDAO.retrieveUserFromDataSnapshotDoctor(dataSnapshot, false);
+                if (TextUtils.equals(mDoctorDTO.getUserId(), userChanged.getUserId())) {
+                    mDoctorDTO = userChanged;
+                    if (mDoctorDTO.isRequested()) {
+                        sendNotification(mDoctorDTO.getRequesterPhoneNumber());
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+    }
+
+    /**
+     ******************************
+     *  ACTIVITY LIFECYCLE LOGIC  *
+     ******************************
+     */
+
+    @Override
+    protected void onStart(){
+        System.out.println("onStart method for LoginActivity being called");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart(){
+        System.out.println("onRestart method for LoginActivity being called");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onPause(){
+        System.out.println("onPause method for LoginActivity being called");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume(){
+        System.out.println("onResume method for LoginActivity being called");
+        // Attach db listeners
+        mDoctorsTable.addChildEventListener(mChildEventListener);
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        System.out.println("onStop method for LoginActivity being called");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy(){
+        System.out.println("onDestroy method for LoginActivity being called");
+        // Release db listeners
+        mDoctorsTable.removeEventListener(mChildEventListener);
+        super.onDestroy();
     }
 }

@@ -9,52 +9,17 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DTO.UserDTO;
 import com.myardina.buckeyes.myardina.R;
 
 public class TeleMedicineActivity extends AppCompatActivity  {
 
     private static final String LOG_TAG = "TELE_MEDICINE_ACTIVITY";
 
-    private FirebaseDatabase database;
-    private DatabaseReference ref;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tele_medicine);
         Log.d(LOG_TAG, "Entering onCreate...");
-
-        database = FirebaseDatabase.getInstance();
-        ref = database.getReference(CommonConstants.USERS_TABLE);
-
-        ref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
-                UserDTO user = dataSnapshot.getValue(UserDTO.class);
-                Log.d(LOG_TAG, "UserId: " + user.getUserId());
-                Log.d(LOG_TAG, "Previous Post ID: " + prevChildKey);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
-                Log.d(LOG_TAG, "Previous Post ID: " + prevChildKey);}
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {}
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
 
         // add PhoneStateListener
         PhoneCallListener phoneListener = new PhoneCallListener();

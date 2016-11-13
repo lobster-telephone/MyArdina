@@ -2,7 +2,6 @@ package com.myardina.buckeyes.myardina.Activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,7 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
 import com.myardina.buckeyes.myardina.DAO.UserDAO;
-import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
+import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.R;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
@@ -32,14 +32,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private static final String LOG_TAG = "REGISTER_ACTIVITY";
 
     private FirebaseDatabase ref;
-    private DatabaseReference usersTable;
     private UserDAO userDAO;
 
     private UserRegisterTask mRegTask = null;
 
     // UI references
-//    private EditText mFirstNameView;
-//    private EditText mLastNameView;
     private EditText mEmailView;
     private EditText mEmailConfirmView;
     private EditText mPasswordView;
@@ -56,14 +53,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         Bundle extras = this.getIntent().getExtras();
 
         ref = FirebaseDatabase.getInstance();
-        usersTable = ref.getReference(CommonConstants.USERS_TABLE);
 
         userDAO = new UserDAO();
-
-//        mFirstNameView = (EditText) findViewById(R.id.etFirstName);
-//        mFirstNameView.setOnFocusChangeListener(this);
-//        mLastNameView = (EditText) findViewById(R.id.etLastName);
-//        mLastNameView.setOnFocusChangeListener(this);
 
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
@@ -89,6 +80,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         patient_button = (RadioButton) findViewById(R.id.radio_patient);
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
+
+    /**
+     *****************************
+     *  UI EVENT LISTENER LOGIC  *
+     *****************************
+     */
 
     @Override
     public void onClick(View v) {
@@ -136,6 +133,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /**
+     ******************************
+     *  PRIVATE BACKGROUND LOGIC  *
+     ******************************
+     */
+
+    /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
@@ -148,6 +151,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mEmailConfirmView.setError(null);
         mPasswordView.setError(null);
         mPasswordConfirmView.setError(null);
+        doctor_button.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
@@ -171,7 +175,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         boolean validEmail = validateEmail(email);
         focusView = validEmail ? mEmailView : focusView;
 
-        boolean userTypeSelected = patient_button.isSelected() && doctor_button.isSelected();
+        boolean userTypeSelected = validateUserSelection();
         focusView = userTypeSelected ? mPasswordConfirmView : focusView;
 
         if (focusView != null) {
@@ -237,6 +241,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return invalid;
     }
 
+    private boolean validateUserSelection() {
+        boolean invalid = !patient_button.isChecked() && !doctor_button.isChecked();
+        if (invalid) {
+            doctor_button.setError("User Type is required.");
+        }
+        return invalid;
+    }
+
     private boolean isEmailValid(String email) {
         return email.contains("@");
     }
@@ -282,32 +294,34 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 public void onSuccess(Object o) {
                     Log.d(LOG_TAG, "Entering onSuccess...");
                     String userId = UserRegisterTask.this.auth.getCurrentUser().getUid();
-                    DatabaseReference childRef = RegisterActivity.this.usersTable.push();
-                    childRef.child(CommonConstants.USER_ID).setValue(userId);
                     boolean doctor = RegisterActivity.this.doctor_button.isChecked();
-
-                    UserDTO userDTO = new UserDTO();
-                    userDTO.setDoctor(doctor);
-                    userDTO.setRequesterPhoneNumber("0000000000");
-                    userDTO.setAvailable(false);
-                    userDTO.setVerifiedDoctor(false);
-                    userDTO.setRequested(false);
-                    userDTO.setEmail(mEmailView.getText().toString());
-                    userDTO.setUserId(userId);
-                    userDTO.setUserKey(childRef.getKey());
-
-                    userDAO.saveRegisterInformationPage(userDTO);
-
-                    SharedPreferences sharedpreferences = getSharedPreferences(CommonConstants.PREFERENCES, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putBoolean(CommonConstants.DOCTOR, doctor);
-                    editor.putString(CommonConstants.USER_ID, userId);
-                    editor.putString(CommonConstants.USER_KEY, childRef.getKey());
-                    editor.commit();
 
                     Intent nextActivity;
                     nextActivity = new Intent(RegisterActivity.this, AdditionalInformationActivity.class);
-                    nextActivity.putExtra(CommonConstants.USER_DTO, userDTO);
+
+                    if (doctor) {
+                        DatabaseReference doctorsTable = ref.getReference(CommonConstants.DOCTORS_TABLE);
+                        DatabaseReference childRef = doctorsTable.push();
+                        DoctorDTO doctorDTO = new DoctorDTO();
+                        doctorDTO.setRequesterPhoneNumber("0000000000");
+                        doctorDTO.setAvailable(false);
+                        doctorDTO.setVerifiedDoctor(false);
+                        doctorDTO.setRequested(false);
+                        doctorDTO.setEmail(mEmailView.getText().toString());
+                        doctorDTO.setUserId(userId);
+                        doctorDTO.setUserKey(childRef.getKey());
+                        userDAO.saveRegisterInformationDoctor(doctorDTO);
+                        nextActivity.putExtra(CommonConstants.DOCTOR_DTO, doctorDTO);
+                    } else {
+                        DatabaseReference patientsTable = ref.getReference(CommonConstants.PATIENTS_TABLE);
+                        DatabaseReference childRef = patientsTable.push();
+                        PatientDTO patientDTO = new PatientDTO();
+                        patientDTO.setEmail(mEmailView.getText().toString());
+                        patientDTO.setUserId(userId);
+                        patientDTO.setUserKey(childRef.getKey());
+                        userDAO.saveRegisterInformationPatient(patientDTO);
+                        nextActivity.putExtra(CommonConstants.PATIENT_DTO, patientDTO);
+                    }
                     RegisterActivity.this.startActivity(nextActivity);
                     Log.d(LOG_TAG, "Exiting onSuccess...");
                 }
@@ -317,7 +331,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 public void onFailure(@NonNull Exception e) {
                     Log.d(LOG_TAG, "Entering onFailure...");
                     // there was an error
-                    Toast created_user_toast = Toast.makeText(mContext, "User " + mEmail + " cannot be created, might exist already, try again!", Toast.LENGTH_SHORT);
+                    Toast created_user_toast = Toast.makeText(mContext, "User " + mEmail + " cannot be created. " + e.getMessage(), Toast.LENGTH_SHORT);
                     created_user_toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
                     created_user_toast.show();
                     Log.d(LOG_TAG, "Exiting onFailure...");
@@ -351,9 +365,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /**
-     **************************
-     *  ACTIVITY STATE LOGIC  *
-     **************************
+     ******************************
+     *  ACTIVITY LIFECYCLE LOGIC  *
+     ******************************
      */
 
     @Override
@@ -391,6 +405,4 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         System.out.println("onDestroy method for RegisterActivity being called");
         super.onDestroy();
     }
-
-
 }

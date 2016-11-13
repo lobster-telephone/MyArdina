@@ -17,7 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
 import com.myardina.buckeyes.myardina.DAO.DoctorDAO;
-import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
+import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.R;
 
 import java.util.ArrayList;
@@ -29,9 +30,9 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
 
     // Data information objects
     private DoctorDAO mDoctorDAO;
-    private UserDTO mUserDTO;
+    private PatientDTO mPatientDTO;
 
-    private DatabaseReference mUsersTable;
+    private DatabaseReference mDoctorsTable;
 
     // Activity log tag
     private static final String LOG_TAG = "DOCTORS_AVAILABLE_ACT";
@@ -61,12 +62,12 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
         mAdapter = new ArrayAdapter<>(DoctorsAvailableActivity.this, android.R.layout.simple_list_item_1, names);
         lvDoctorListView.setAdapter(mAdapter);
 
-        mUserDTO = (UserDTO) getIntent().getExtras().get(CommonConstants.USER_DTO);
+        mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
         mDoctorDAO = new DoctorDAO();
 
         FirebaseDatabase mRef = FirebaseDatabase.getInstance();
-        mUsersTable = mRef.getReference().child(CommonConstants.USERS_TABLE);
-        mUsersTable.addValueEventListener(mValueEventListener);
+        mDoctorsTable = mRef.getReference().child(CommonConstants.DOCTORS_TABLE);
+        mDoctorsTable.addValueEventListener(mValueEventListener);
 
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
@@ -80,8 +81,8 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(LOG_TAG, "Entering onDataChange...");
                 names.clear();
-                List<UserDTO> availableDoctors = mDoctorDAO.retrieveAvailableDoctors(dataSnapshot);
-                for (UserDTO doctor : availableDoctors) {
+                List<DoctorDTO> availableDoctors = mDoctorDAO.retrieveAvailableDoctors(dataSnapshot);
+                for (DoctorDTO doctor : availableDoctors) {
                     userIds.put(names.size(), doctor.getUserKey());
                     String name = doctor.getFirstName() + CommonConstants.SPACE + doctor.getLastName();
                     Log.d(LOG_TAG, "Name: " + name);
@@ -111,15 +112,15 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
                 int viewId = parent.getId();
                 switch (viewId) {
                     case R.id.lvDoctorsAvailableList:
-                        UserDTO doctorDTO = new UserDTO();
+                        DoctorDTO doctorDTO = new DoctorDTO();
                         doctorDTO.setUserKey(userIds.get(position));
                         doctorDTO.setRequested(true);
                         doctorDTO.setAvailable(false);
-                        doctorDTO.setRequesterPhoneNumber(mUserDTO.getPhoneNumber());
+                        doctorDTO.setRequesterPhoneNumber(mPatientDTO.getPhoneNumber());
                         mDoctorDAO.updateDoctorToNotAvailable(doctorDTO);
                         Intent activity = new Intent(DoctorsAvailableActivity.this, TeleMedicineActivity.class);
-                        activity.putExtra(CommonConstants.USER_DTO, mUserDTO);
-                        mUsersTable.removeEventListener(mValueEventListener);
+                        activity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
+                        mDoctorsTable.removeEventListener(mValueEventListener);
                         DoctorsAvailableActivity.this.startActivity(activity);
                         break;
                     default:

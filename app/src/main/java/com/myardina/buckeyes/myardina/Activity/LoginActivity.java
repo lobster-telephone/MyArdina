@@ -26,7 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
 import com.myardina.buckeyes.myardina.DAO.UserDAO;
-import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
+import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.R;
 
 
@@ -38,16 +39,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final String LOG_TAG = "LOG_LOGIN_ACTIVITY";
 
     private UserLoginTask mAuthTask = null;
+    private DatabaseReference mDoctorsTable;
+    private DatabaseReference mPatientsTable;
+    private ValueEventListener mValueEventListenerDoctor;
+    private ValueEventListener mValueEventListenerPatient;
 
     // Data information objects
-    private UserDTO mUserDTO;
+    private DoctorDTO mDoctorDTO;
+    private PatientDTO mPatientDTO;
     private UserDAO mUserDAO;
 
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
-
-    private DatabaseReference mUsersTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +71,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mEmailRegisterButton.setOnClickListener(this);
 
         FirebaseDatabase mRef = FirebaseDatabase.getInstance();
-        mUsersTable = mRef.getReference().child(CommonConstants.USERS_TABLE);
-        mUserDTO = new UserDTO();
+        mDoctorsTable = mRef.getReference().child(CommonConstants.DOCTORS_TABLE);
+        mPatientsTable = mRef.getReference().child(CommonConstants.PATIENTS_TABLE);
+        initializeValueEventListeners();
         mUserDAO = new UserDAO();
 
         // TODO: DEBUG BUTTONS ! REMOVE BEFORE DEPLOYING
@@ -78,6 +83,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         bQuickLoginDoctor.setOnClickListener(this);
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
+
+    /**
+     *****************************
+     *  UI EVENT LISTENER LOGIC  *
+     *****************************
+     */
 
     @Override
     public void onClick(View v) {
@@ -96,12 +107,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 LoginActivity.this.startActivity(registerActivity);
                 break;
             case R.id.b_quick_login:
-                mEmailView.setText("p@m.com");
+                mEmailView.setText("b@pa.com");
                 mPasswordView.setText("Dummy1234");
                 attemptLogin();
                 break;
             case R.id.b_quick_login_doctor:
-                mEmailView.setText("t6@gmail.com");
+                mEmailView.setText("b@da.com");
                 mPasswordView.setText("Dummy1234");
                 attemptLogin();
                 break;
@@ -130,6 +141,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         Log.d(LOG_TAG, "Exiting onFocusChange...");
     }
+
+    /**
+     ******************************
+     *  PRIVATE BACKGROUND LOGIC  *
+     ******************************
+     */
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -234,26 +251,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             OnSuccessListener login_success = new OnSuccessListener() {
                 @Override
                 public void onSuccess(Object o) {
-                    mUsersTable.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.d(LOG_TAG, "Entering onDataChange...");
-                            mUserDTO = mUserDAO.retrieveUserFromDataSnapshot(dataSnapshot, true);
-                            Intent nextActivity;
-                            if (mUserDTO.isDoctor()) {
-                                nextActivity = new Intent(LoginActivity.this, DoctorActivity.class);
-                            } else {
-                                nextActivity = new Intent(LoginActivity.this, SymptomsActivity.class);
-                            }
-                            nextActivity.putExtra(CommonConstants.USER_DTO, mUserDTO);
-                            mUsersTable.removeEventListener(this);
-                            Log.d(LOG_TAG, "Exiting onDataChange...");
-                            LoginActivity.this.startActivity(nextActivity);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {}
-                    });
+                    mDoctorsTable.addValueEventListener(mValueEventListenerDoctor);
+                    mPatientsTable.addValueEventListener(mValueEventListenerPatient);
                 }
             };
             OnFailureListener login_failure = new OnFailureListener() {
@@ -277,7 +276,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            // if (success){} else {}
         }
 
         @Override
@@ -286,10 +284,46 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    private void initializeValueEventListeners() {
+        mValueEventListenerDoctor = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(LOG_TAG, "Entering onDataChange...");
+                mDoctorDTO = mUserDAO.retrieveUserFromDataSnapshotDoctor(dataSnapshot, true);
+                if (mDoctorDTO.getUserId() != null) {
+                    Intent nextActivity = new Intent(LoginActivity.this, DoctorActivity.class);
+                    nextActivity.putExtra(CommonConstants.DOCTOR_DTO, mDoctorDTO);
+                    Log.d(LOG_TAG, "Exiting onDataChange...");
+                    LoginActivity.this.startActivity(nextActivity);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+
+        mValueEventListenerPatient = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(LOG_TAG, "Entering onDataChange...");
+                mPatientDTO = mUserDAO.retrieveUserFromDataSnapshotPatient(dataSnapshot, true);
+                if (mPatientDTO.getUserId() != null) {
+                    Intent nextActivity = new Intent(LoginActivity.this, SymptomsActivity.class);
+                    nextActivity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
+                    Log.d(LOG_TAG, "Exiting onDataChange...");
+                    LoginActivity.this.startActivity(nextActivity);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+    }
+
     /**
-     **************************
-     *  ACTIVITY STATE LOGIC  *
-     **************************
+     ******************************
+     *  ACTIVITY LIFECYCLE LOGIC  *
+     ******************************
      */
 
     @Override
@@ -307,6 +341,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onPause(){
         System.out.println("onPause method for LoginActivity being called");
+        // Release db listener
+        mDoctorsTable.removeEventListener(mValueEventListenerDoctor);
+        mPatientsTable.removeEventListener(mValueEventListenerPatient);
         super.onPause();
     }
 

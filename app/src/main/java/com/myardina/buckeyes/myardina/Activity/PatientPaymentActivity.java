@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DTO.UserDTO;
+import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.R;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
@@ -30,21 +30,10 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
     private static final String LOG_TAG = "PATIENT_PAYMENT";
 
     // Data objects
-    private FirebaseDatabase ref;
     private DatabaseReference paymentsTable;
-    private UserDTO mUserDTO;
+    private PatientDTO mPatientDTO;
 
     private static PayPalConfiguration config;
-
-    private Button continueButton;
-    private Button paypalLoginButton;
-    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_SANDBOX;
-    // note that these credentials will differ between live & sandbox environments.
-    private static final String CONFIG_CLIENT_ID = "ASXfMywB-eKIJKk2fSZ9ydmY6L_g3LKLEcG1JScixKR9-t1X_cTMrTbQg5fhv-FsPwdzH3c4RNHmOjs6";
-
-    private static final int REQUEST_CODE_PAYMENT = 1;
-    private static final int REQUEST_CODE_FUTURE_PAYMENT = 2;
-    private static final int REQUEST_CODE_PROFILE_SHARING = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +45,9 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
                 // Start with mock environment.  When ready, switch to sandbox (ENVIRONMENT_SANDBOX)
                 // or live (ENVIRONMENT_PRODUCTION)
                 .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
-                .clientId(CONFIG_CLIENT_ID);
+                // Use CommonConstants.CONFIG_CLIENT_ID_RELEASE when going live from sandbox and be
+                // sure to determine the release key first.
+                .clientId(CommonConstants.CONFIG_CLIENT_ID_DEVELOPMENT);
 
         //starts up paypal service when activity launched
         Intent intent = new Intent(this, PayPalService.class);
@@ -69,14 +60,14 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
         Button continueButton = (Button) findViewById(R.id.b_continue_to_map);
         continueButton.setOnClickListener(this);
 
-        mUserDTO = (UserDTO) getIntent().getExtras().get(CommonConstants.USER_DTO);
+        mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
 
     /**
-     **************************
-     *  EVENT LISTENER LOGIC  *
-     **************************
+     *****************************
+     *  UI EVENT LISTENER LOGIC  *
+     *****************************
      */
 
     @Override
@@ -100,7 +91,7 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.b_continue_to_map:
                 Intent doctorsAvailableActivity = new Intent(PatientPaymentActivity.this, DoctorsAvailableActivity.class);
-                doctorsAvailableActivity.putExtra(CommonConstants.USER_DTO, mUserDTO);
+                doctorsAvailableActivity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
                 PatientPaymentActivity.this.startActivity(doctorsAvailableActivity);
                 break;
             default:
@@ -125,17 +116,16 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
                     String confirm_str = confirm.toJSONObject().toString(4);
                     Log.i(LOG_TAG, confirm_str);
 
-
                     // TODO: send 'confirm' to your server for verification.
                     // see https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
                     // for more details.
 
                     //confirm payment to our database
-                    ref = FirebaseDatabase.getInstance();
+                    FirebaseDatabase ref = FirebaseDatabase.getInstance();
                     paymentsTable = ref.getReference(CommonConstants.PAYMENTS_TABLE);
                     DatabaseReference childRef = PatientPaymentActivity.this.paymentsTable.push();
-                    childRef.child("Payment").setValue(confirm);
-                    childRef.child("UserID").setValue(mUserDTO.getUserKey());
+                    childRef.child(CommonConstants.PAYMENTS_TABLE).setValue(confirm);
+                    childRef.child(CommonConstants.USER_ID).setValue(mPatientDTO.getUserKey());
 
                     //toast that says payment successful
                     Toast created_user_toast = Toast.makeText(getApplicationContext(), "Payment successful!", Toast.LENGTH_SHORT);
@@ -144,7 +134,7 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
 
                     //gos to doctors available activity
                     Intent doctorsAvailableActivity = new Intent(PatientPaymentActivity.this, DoctorsAvailableActivity.class);
-                    doctorsAvailableActivity.putExtra(CommonConstants.USER_DTO, mUserDTO);
+                    doctorsAvailableActivity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
                     PatientPaymentActivity.this.startActivity(doctorsAvailableActivity);
 
                 } catch (JSONException e) {
@@ -162,14 +152,44 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
     }
 
     /**
-     **************************
-     *  ACTIVITY STATE LOGIC  *
-     **************************
+     ******************************
+     *  ACTIVITY LIFECYCLE LOGIC  *
+     ******************************
      */
 
     @Override
-    public void onDestroy() {
-        stopService(new Intent(this, PayPalService.class));
+    protected void onStart() {
+        System.out.println("onStart method for RegisterActivity being called");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart() {
+        System.out.println("onRestart method for RegisterActivity being called");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onPause() {
+        System.out.println("onPause method for RegisterActivity being called");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        System.out.println("onResume method for RegisterActivity being called");
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        System.out.println("onStop method for RegisterActivity being called");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        System.out.println("onDestroy method for RegisterActivity being called");
         super.onDestroy();
     }
 }

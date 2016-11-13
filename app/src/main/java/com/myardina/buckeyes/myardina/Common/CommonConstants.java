@@ -12,10 +12,9 @@ public class CommonConstants {
     public static final String N = "N";
     public static final String USD = "USD";
     public static final String EXTRA_EMAIL = "EXTRA_EMAIL";
-    public static final String PREFERENCES = "ARDINA_PREFERENCES";
-    public static final String DOCTOR = "DOCTOR";
     public static final String USER_ID = "UserId";
-    public static final String USER_DTO = "USER_DTO";
+    public static final String DOCTOR_DTO = "DOCTOR_DTO";
+    public static final String PATIENT_DTO = "PATIENT_DTO";
 
     // DATABASE CONSTANTS
     public static final String USER_KEY = "USER_KEY";
@@ -29,7 +28,8 @@ public class CommonConstants {
     public static final String EMAIL_COL = "Email";
     public static final String LOCATION_COL = "Location";
     public static final String PHONE_NUMBER_COL = "PhoneNumber";
-    public static final String USERS_TABLE = "Users";
+    public static final String DOCTORS_TABLE = "Doctors";
+    public static final String PATIENTS_TABLE = "Patients";
     public static final String PAYMENTS_TABLE = "Payments";
 
     // SYMPTOMS CONSTANTS
@@ -44,6 +44,12 @@ public class CommonConstants {
     // PATIENT PAYMENT ACTIVITY
     public static final String FLAT_RATE = "79.00";
     public static final String DOCTOR_TELEMEDICINE = "doctor telemedicine";
+    public static final String CONFIG_CLIENT_ID_DEVELOPMENT = "ASXfMywB-eKIJKk2fSZ9ydmY6L_g3LKLEcG1JScixKR9-t1X_cTMrTbQg5fhv-FsPwdzH3c4RNHmOjs6";
+    // WILL BE DETERMINED WHEN RELEASING APPLICATION TO STORE
+    public static final String CONFIG_CLIENT_ID_RELEASE = "";
+    public static final int REQUEST_CODE_PAYMENT = 1;
+    public static final int REQUEST_CODE_FUTURE_PAYMENT = 2;
+    public static final int REQUEST_CODE_PROFILE_SHARING = 3;
 
     // DOCTORS AVAILABLE ACTIVITY
     public static final String NO_DOCTORS_MESSAGE = "No doctors are currently available.";
