@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -49,6 +50,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         Log.d(LOG_TAG, "Entering onCreate...");
+        //setting custom toolbar dont remove
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
 
         Bundle extras = this.getIntent().getExtras();
 

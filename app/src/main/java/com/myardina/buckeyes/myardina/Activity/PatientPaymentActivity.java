@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -40,6 +41,9 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_payment);
         Log.d(LOG_TAG, "Entering onCreate...");
+        //setting custom toolbar dont remove
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
 
         config = new PayPalConfiguration()
                 // Start with mock environment.  When ready, switch to sandbox (ENVIRONMENT_SANDBOX)

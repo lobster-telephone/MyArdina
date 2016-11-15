@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -44,6 +45,9 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
         Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor);
+        //setting custom toolbar dont remove
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
 
         FirebaseDatabase mRef = FirebaseDatabase.getInstance();
         mDoctorsTable = mRef.getReference().child(CommonConstants.DOCTORS_TABLE);

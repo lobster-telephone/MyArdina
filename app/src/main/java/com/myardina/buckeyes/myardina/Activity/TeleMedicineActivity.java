@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -19,6 +20,9 @@ public class TeleMedicineActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tele_medicine);
+        //setting custom toolbar dont remove
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
         Log.d(LOG_TAG, "Entering onCreate...");
 
         // add PhoneStateListener

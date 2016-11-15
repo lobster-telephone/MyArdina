@@ -3,6 +3,7 @@ package com.myardina.buckeyes.myardina.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -51,6 +52,9 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctors_available);
+        //setting custom toolbar dont remove
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
 
         initializeListeners();
 
