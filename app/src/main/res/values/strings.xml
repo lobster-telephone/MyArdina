@@ -30,9 +30,9 @@
     <string name="choose_3_symptoms">Pick up to three symptoms you have</string>
 
     <!-- Navigation -->
-    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_register">Register</string>
     <string name="title_activity_home">HomeActivity</string>
-    <string name="title_activity_symptoms">SymptomsActivity</string>
+    <string name="title_activity_symptoms">Symptoms</string>
 
     <!-- Symptoms -->
     <string name="male">Male</string>
@@ -44,9 +44,9 @@
     <string name="doctor">Doctor</string>
     <string name="patient">Patient</string>
     <string name="update_availability">Please update your availability</string>
-    <string name="title_activity_payment">PatientPaymentActivity</string>
+    <string name="title_activity_payment">Payment</string>
     <string name="title_activity_tele_medicine">TeleMedicineActivity</string>
-    <string name="title_activity_doctor">DoctorActivity</string>
+    <string name="title_activity_doctor">Availability</string>
 
     <string name="accept_label">Accept</string>
     <string name="decline_label">Decline</string>
@@ -56,7 +56,7 @@
         <item>Available</item>
         <item>Busy</item>
     </string-array>
-    <string name="title_activity_doctors_available">DoctorsAvailable</string>
+    <string name="title_activity_doctors_available">Doctors Online</string>
     <string name="available_doctors">Here is a list of available doctors at this time:</string>
     <string name="title_activity_additional_information">AdditionalInformationActivity</string>
     <string name="prompt_location">Location</string>

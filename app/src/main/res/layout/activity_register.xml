@@ -3,34 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include android:id="@+id/app_bar"
-        layout="@layout/app_bar"/>
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar" />
 
     <RelativeLayout
         android:id="@+id/register_top_bar"
-        android:layout_below="@id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_bar">
 
-        <TextView
-            android:id="@+id/register_top_bar_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="15dp"
-            android:layout_marginTop="15dp"
-            android:keepScreenOn="true"
-            android:padding="10dp"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <!--<TextView-->
+            <!--android:id="@+id/register_top_bar_text"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_marginBottom="15dp"-->
+            <!--android:layout_marginTop="15dp"-->
+            <!--android:keepScreenOn="true"-->
+            <!--android:padding="10dp"-->
+            <!--android:textAlignment="center"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textStyle="bold" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/register_top_bar_text"
-            android:orientation="horizontal"
             android:baselineAligned="false"
+            android:orientation="horizontal"
             android:paddingBottom="10dp"
             android:paddingLeft="50dp"
             android:paddingRight="50dp"
@@ -74,28 +74,26 @@
         android:layout_below="@+id/register_top_bar">
 
         <LinearLayout
+            android:id="@+id/register_textview_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/email_register_form"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Please Enter Your Account Details"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/email_register_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
             android:orientation="vertical">
-
-            <!--<EditText-->
-                <!--android:id="@+id/etFirstName"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:hint="@string/prompt_first_name"-->
-                <!--android:inputType="textPersonName"-->
-                <!--android:maxLines="1"-->
-                <!--android:singleLine="true" />-->
-
-            <!--<EditText-->
-                <!--android:id="@+id/etLastName"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:hint="@string/prompt_last_name"-->
-                <!--android:inputType="textPersonName"-->
-                <!--android:maxLines="1"-->
-                <!--android:singleLine="true" />-->
 
             <EditText
                 android:id="@+id/email"
@@ -103,8 +101,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:maxLines="1" />
 
             <EditText
                 android:id="@+id/email_confirm"
@@ -112,8 +109,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email_confirm"
                 android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:maxLines="1" />
 
             <EditText
                 android:id="@+id/password"
@@ -124,8 +120,7 @@
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:maxLines="1" />
 
             <EditText
                 android:id="@+id/password_confirm"
@@ -136,26 +131,35 @@
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:maxLines="1" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_alignParentBottom="true">
 
             <Button
                 android:id="@+id/email_register_button"
                 style="actionButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="@string/register"
                 android:textAlignment="center"
-                android:textStyle="bold" />
-
+                android:textColor="@color/whitePrimaryText"
+                android:background="@drawable/login_auth_buttons"
+                 />
         </LinearLayout>
+
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/register_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
-    </RelativeLayout>
+        android:layout_alignParentBottom="true"></RelativeLayout>
 </RelativeLayout>
