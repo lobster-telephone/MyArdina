@@ -3,6 +3,17 @@
     <string name="app_name">MyArdina</string>
     <string name="facebook_app_id">1647878202208728</string>
 
+    <!--Activity Titles-->
+    <string name="title_activity_additional_information">Additional Information</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_symptoms">Symptoms</string>
+    <string name="title_activity_tele_medicine">TeleMedicineActivity</string>
+    <string name="title_activity_doctor">Availability</string>
+    <string name="title_activity_payment">Payment</string>
+    <string name="title_activity_doctors_available">Doctors Online</string>
+    <string name="title_activity_admin">AdminActivity</string>
+
     <!-- Login/Register -->
     <string name="prompt_first_name">First Name</string>
     <string name="prompt_last_name">Last Name</string>
@@ -28,42 +39,34 @@
     <!-- Symptoms -->
     <string name="symptoms">Symptoms</string>
     <string name="choose_3_symptoms">Pick up to three symptoms you have</string>
-
-    <!-- Navigation -->
-    <string name="title_activity_register">Register</string>
-    <string name="title_activity_home">HomeActivity</string>
-    <string name="title_activity_symptoms">Symptoms</string>
-
-    <!-- Symptoms -->
     <string name="male">Male</string>
     <string name="ventral">Front</string>
     <string name="dorsal">Back</string>
     <string name="male_ventral">male body frontal view"</string>
     <string name="female">Female</string>
-
     <string name="doctor">Doctor</string>
     <string name="patient">Patient</string>
     <string name="update_availability">Please update your availability</string>
-    <string name="title_activity_payment">Payment</string>
-    <string name="title_activity_tele_medicine">TeleMedicineActivity</string>
-    <string name="title_activity_doctor">Availability</string>
-
     <string name="accept_label">Accept</string>
     <string name="decline_label">Decline</string>
     <string name="call_number">Call 4197062697</string>
+    <string name="available_doctors">Here is a list of available doctors at this time:</string>
+    <string name="prompt_location">Location</string>
+    <string name="prompt_phone_number">Phone Number</string>
+    <string name="account_details_title">Please Enter Your Account Details for Registration</string>
+    <string name="cont">Continue</string>
+    <string name="login_to_paypal">Login to Paypal</string>
+    <string name="waiting_doc_response">Waiting for the doctors approval…</string>
 
+    <!--Arrays-->
     <string-array name="doctor_availability_spinner_array">
         <item>Available</item>
         <item>Busy</item>
     </string-array>
-    <string name="title_activity_doctors_available">Doctors Online</string>
-    <string name="available_doctors">Here is a list of available doctors at this time:</string>
-    <string name="title_activity_additional_information">AdditionalInformationActivity</string>
-    <string name="prompt_location">Location</string>
-    <string name="prompt_phone_number">Phone Number</string>
-    <string name="title_activity_admin">AdminActivity</string>
 
     <!-- Admin -->
     <string name="pending_payments">Pending Payments</string>
+    <string name="choose_symptoms">Please select a body part to choose symptoms</string>
+    <string name="paypal_transaction">A payment of $79 is required to use our service. Please login to Paypal to make your transaction.</string>
 
 </resources>

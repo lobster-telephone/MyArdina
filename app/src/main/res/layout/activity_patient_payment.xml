@@ -22,14 +22,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:gravity="center"
+                        android:textColor="@color/blackPrimaryText"
+                        android:textStyle="bold|italic"
+                        android:text="@string/paypal_transaction"/>
                 <Button
                     android:id="@+id/login_paypal"
                     style="actionButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
                     android:textAlignment="center"
-                    android:text="Login to Paypal"
+                    android:text="@string/login_to_paypal"
+                    android:background="@drawable/login_auth_buttons"
+                    android:textColor="@color/whitePrimaryText"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -39,17 +53,17 @@
             android:id="@+id/continue_button_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/payment_main"
+            android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
             <Button
                 android:id="@+id/b_continue_to_map"
-                style="actionButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textAlignment="center"
-                android:text="Continue"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/cont"
                 android:textStyle="bold" />
 
         </LinearLayout>

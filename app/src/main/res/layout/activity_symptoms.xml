@@ -1,153 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Activity.SymptomsActivity">
-
-    <include android:id="@+id/app_bar"
-        layout="@layout/app_bar"/>
-
-    <RelativeLayout
-        android:id="@+id/symptoms_Screen"
-        android:layout_below="@id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RadioGroup
-            android:id="@+id/mf_radio_buttons"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:orientation="horizontal">
-            <RadioButton android:id="@+id/male_radio_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/male"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-            <RadioButton android:id="@+id/female_radio_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/female"
-                android:textStyle="bold"
-                android:textSize="12sp"/>
-        </RadioGroup>
-
-        <RadioGroup
-            android:id="@+id/vd_radio_buttons"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@id/mf_radio_buttons"
-            android:orientation="horizontal">
-            <RadioButton android:id="@+id/ventral_radio_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ventral"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-            <RadioButton android:id="@+id/dorsal_radio_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dorsal"
-                android:textStyle="bold"
-                android:textSize="12sp"/>
-        </RadioGroup>
-
-
-
-        <RelativeLayout
-            android:id="@+id/body_diagram_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/vd_radio_buttons">
-
-            <ImageView
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/male_ventral_image"
-                android:contentDescription="@string/male_ventral"
-                android:src="@drawable/male_ventral_image"/>
+                tools:context=".Activity.SymptomsActivity">
 
-            <Button
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/mv_head_button"
-                android:background="?android:selectableItemBackground"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="43dp" />
+    <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar"/>
 
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:id="@+id/mv_chest_button"
-                android:background="?android:selectableItemBackground"
-                android:layout_below="@+id/mv_head_button"
-                android:layout_centerHorizontal="true" />
-
-            <Button
-                android:layout_width="40dp"
-                android:layout_height="70dp"
-                android:id="@+id/mv_abdomen_button"
-                android:background="?android:selectableItemBackground"
-                android:layout_alignLeft="@+id/mv_chest_button"
-                android:layout_alignStart="@+id/mv_chest_button"
-                android:layout_below="@+id/mv_chest_button"
-                android:layout_alignRight="@+id/mv_chest_button"
-                android:layout_alignEnd="@+id/mv_chest_button" />
-
-            <Button
-                android:layout_width="60dp"
-                android:layout_height="175dp"
-                android:id="@+id/mv_legs_button"
-                android:background="?android:selectableItemBackground"
-                android:layout_alignLeft="@+id/mv_abdomen_button"
-                android:layout_alignStart="@+id/mv_abdomen_button"
-                android:layout_below="@+id/mv_abdomen_button"
-                android:layout_alignRight="@+id/mv_abdomen_button"
-                android:layout_alignEnd="@+id/mv_abdomen_button" />
-
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:id="@+id/mv_arm1_button"
-                android:background="?android:selectableItemBackground"
-                android:layout_above="@+id/mv_abdomen_button"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@+id/mv_chest_button"
-                android:layout_toStartOf="@+id/mv_chest_button" />
-
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:id="@+id/mv_arm2_button"
-                android:background="?android:selectableItemBackground"
-                android:layout_alignTop="@+id/mv_chest_button"
-                android:layout_toRightOf="@+id/mv_chest_button"
-                android:layout_above="@+id/mv_abdomen_button"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/continue_to_payment"
+    <RelativeLayout
+            android:id="@+id/symptoms_Screen"
+            android:layout_below="@id/app_bar"
+            android:background="@color/whitePrimaryText"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
+        <TextView
+                android:id="@+id/symptoms_selection_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="30dp"
+                android:textSize="16sp"
+                android:textColor="@color/blackPrimaryText"
+                android:text="@string/choose_symptoms"/>
+
+        <RelativeLayout
+                android:id="@+id/symptoms_layout_container"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true">
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/male_ventral_image"
+                    android:contentDescription="@string/male_ventral"
+                    android:src="@drawable/male_ventral_image"/>
+            <LinearLayout
+                    android:id="@+id/body_diagram_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:weightSum="8">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1.5"
+                        android:orientation="horizontal"
+                        android:weightSum="3">
+
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:background="?android:selectableItemBackground"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:clickable="false"
+                            />
+
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:id="@+id/mv_head_button"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:background="?android:selectableItemBackground"
+                            />
+
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:background="?android:selectableItemBackground"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:clickable="false"
+                            />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:weightSum="5"
+                        >
+
+                    <Button
+                            android:layout_width="0dp"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/mv_arm1_button"
+                            android:background="?android:selectableItemBackground"
+                            android:layout_weight="2"
+                            />
+
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:id="@+id/mv_chest_button"
+                            android:background="?android:selectableItemBackground"
+                            android:layout_weight="1"
+                            />
+
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:id="@+id/mv_arm2_button"
+                            android:background="?android:selectableItemBackground"
+                            android:layout_weight="2"
+                            />
+
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1.5"
+                        android:orientation="horizontal"
+                        android:weightSum="3">
+
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="?android:selectableItemBackground"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            />
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/mv_abdomen_button"
+                            android:background="?android:selectableItemBackground"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_weight="1"
+                            />
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="?android:selectableItemBackground"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            />
+
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:orientation="horizontal"
+                        android:layout_weight="4"
+                        android:weightSum="3">
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="?android:selectableItemBackground"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            />
+
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/mv_legs_button"
+                            android:background="?android:selectableItemBackground"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_weight="1"
+                            />
+
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="?android:selectableItemBackground"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <Button
                 android:id="@+id/b_continue_to_payment"
-                style="actionButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="Continue"
                 android:textStyle="bold"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="445dp" />
+                android:background="@drawable/login_auth_buttons"
+                android:textColor="@color/whitePrimaryText"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                />
 
-        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

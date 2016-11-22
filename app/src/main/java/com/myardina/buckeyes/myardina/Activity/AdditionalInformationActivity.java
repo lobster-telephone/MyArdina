@@ -3,6 +3,7 @@ package com.myardina.buckeyes.myardina.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +38,9 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_additional_information);
         Log.d(LOG_TAG, "Entering onCreate...");
+        //setting custom toolbar dont remove
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
 
         // Initialize UI elements
         mFirstNameView = (EditText) findViewById(R.id.etFirstName);

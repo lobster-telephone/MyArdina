@@ -12,7 +12,6 @@ android {
         versionName "1.0"
         multiDexEnabled true
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -25,6 +24,10 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META-INF/NOTICE'
+    }
+
+    dexOptions {
+        javaMaxHeapSize "2g"
     }
 }
 
@@ -43,6 +46,8 @@ dependencies {
     compile 'com.firebaseui:firebase-ui:0.3.1'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.paypal.sdk:paypal-android-sdk:2.15.0'
+    compile 'com.android.support.test:testing-support-lib:0.1'
+    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.6.3'
 }
 
 apply plugin: 'com.google.gms.google-services'
