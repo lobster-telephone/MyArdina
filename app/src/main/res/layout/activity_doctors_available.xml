@@ -24,7 +24,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,6 +34,4 @@
             layout="@layout/doctors_available_listview" />
 
     </RelativeLayout>
-
-
 </RelativeLayout>

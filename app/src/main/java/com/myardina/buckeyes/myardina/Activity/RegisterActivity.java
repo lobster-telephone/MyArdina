@@ -22,7 +22,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DAO.UserDAO;
+import com.myardina.buckeyes.myardina.DAO.DoctorDAO;
+import com.myardina.buckeyes.myardina.DAO.Impl.DoctorDAOImpl;
+import com.myardina.buckeyes.myardina.DAO.Impl.PatientDAOImpl;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.R;
@@ -32,7 +34,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private static final String LOG_TAG = "REGISTER_ACTIVITY";
 
     private FirebaseDatabase ref;
-    private UserDAO userDAO;
+    private PatientDAOImpl mPatientDAO;
+    private DoctorDAO mDoctorDAO;
 
     private UserRegisterTask mRegTask = null;
 
@@ -54,7 +57,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         ref = FirebaseDatabase.getInstance();
 
-        userDAO = new UserDAO();
+        mPatientDAO = new PatientDAOImpl();
+        mDoctorDAO = new DoctorDAOImpl();
 
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
@@ -293,7 +297,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 @Override
                 public void onSuccess(Object o) {
                     Log.d(LOG_TAG, "Entering onSuccess...");
-                    String userId = UserRegisterTask.this.auth.getCurrentUser().getUid();
+                    String userAccountId = UserRegisterTask.this.auth.getCurrentUser().getUid();
                     boolean doctor = RegisterActivity.this.doctor_button.isChecked();
 
                     Intent nextActivity;
@@ -303,23 +307,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         DatabaseReference doctorsTable = ref.getReference(CommonConstants.DOCTORS_TABLE);
                         DatabaseReference childRef = doctorsTable.push();
                         DoctorDTO doctorDTO = new DoctorDTO();
-                        doctorDTO.setRequesterPhoneNumber("0000000000");
+                        doctorDTO.setRequesterPhoneNumber(CommonConstants.DEFAULT_REQUESTER_NUMBER);
                         doctorDTO.setAvailable(false);
                         doctorDTO.setVerifiedDoctor(false);
                         doctorDTO.setRequested(false);
                         doctorDTO.setEmail(mEmailView.getText().toString());
-                        doctorDTO.setUserId(userId);
+                        doctorDTO.setUserAccountId(userAccountId);
                         doctorDTO.setUserKey(childRef.getKey());
-                        userDAO.saveRegisterInformationDoctor(doctorDTO);
+                        doctorDTO.setTableKey(childRef.getKey());
+                        mDoctorDAO.saveRegisterInformation(doctorDTO);
                         nextActivity.putExtra(CommonConstants.DOCTOR_DTO, doctorDTO);
                     } else {
                         DatabaseReference patientsTable = ref.getReference(CommonConstants.PATIENTS_TABLE);
                         DatabaseReference childRef = patientsTable.push();
                         PatientDTO patientDTO = new PatientDTO();
                         patientDTO.setEmail(mEmailView.getText().toString());
-                        patientDTO.setUserId(userId);
+                        patientDTO.setUserAccountId(userAccountId);
                         patientDTO.setUserKey(childRef.getKey());
-                        userDAO.saveRegisterInformationPatient(patientDTO);
+                        patientDTO.setTableKey(childRef.getKey());
+                        mPatientDAO.saveRegisterInformation(patientDTO);
                         nextActivity.putExtra(CommonConstants.PATIENT_DTO, patientDTO);
                     }
                     RegisterActivity.this.startActivity(nextActivity);

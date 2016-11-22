@@ -22,7 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DAO.UserDAO;
+import com.myardina.buckeyes.myardina.DAO.DoctorDAO;
+import com.myardina.buckeyes.myardina.DAO.Impl.DoctorDAOImpl;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.R;
 
@@ -32,7 +33,7 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
 
     // Data information objects
     private DoctorDTO mDoctorDTO;
-    private UserDAO mUserDAO;
+    private DoctorDAO mDoctorDAO;
 
     private boolean mAvailabilitySpinnerSelected;
 
@@ -51,7 +52,7 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
         initializeDBListeners();
 
         mDoctorDTO = (DoctorDTO) getIntent().getExtras().get(CommonConstants.DOCTOR_DTO);
-        mUserDAO = new UserDAO();
+        mDoctorDAO = new DoctorDAOImpl();
 
         Spinner doctorAvailabilitySpinner = (Spinner) findViewById(R.id.spinner_doctor_availability);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -105,10 +106,10 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
                 if (mAvailabilitySpinnerSelected) {
                     if (position == 0) {
                         mDoctorDTO.setAvailable(true);
-                        mUserDAO.updateDoctorAvailability(mDoctorDTO);
+                        mDoctorDAO.updateDoctorAvailability(mDoctorDTO);
                     } else if (position == 1) {
                         mDoctorDTO.setAvailable(false);
-                        mUserDAO.updateDoctorAvailability(mDoctorDTO);
+                        mDoctorDAO.updateDoctorAvailability(mDoctorDTO);
                     }
                     mAvailabilitySpinnerSelected = false;
                 } else {
@@ -150,8 +151,8 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
-                DoctorDTO userChanged = mUserDAO.retrieveUserFromDataSnapshotDoctor(dataSnapshot, false);
-                if (TextUtils.equals(mDoctorDTO.getUserId(), userChanged.getUserId())) {
+                DoctorDTO userChanged = (DoctorDTO) mDoctorDAO.retrieveUser(dataSnapshot, false);
+                if (TextUtils.equals(mDoctorDTO.getUserAccountId(), userChanged.getUserAccountId())) {
                     mDoctorDTO = userChanged;
                     if (mDoctorDTO.isRequested()) {
                         sendNotification(mDoctorDTO.getRequesterPhoneNumber());

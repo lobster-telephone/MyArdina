@@ -25,10 +25,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
+import com.myardina.buckeyes.myardina.DAO.Impl.DoctorDAOImpl;
+import com.myardina.buckeyes.myardina.DAO.Impl.PatientDAOImpl;
+import com.myardina.buckeyes.myardina.DAO.Impl.PicklistDAOImpl;
+import com.myardina.buckeyes.myardina.DAO.PicklistDAO;
 import com.myardina.buckeyes.myardina.DAO.UserDAO;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
+import com.myardina.buckeyes.myardina.DTO.PicklistDTO;
 import com.myardina.buckeyes.myardina.R;
+import com.myardina.buckeyes.myardina.Sevice.Impl.PicklistServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.PicklistService;
+
+import java.util.List;
 
 
 /**
@@ -41,17 +50,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private UserLoginTask mAuthTask = null;
     private DatabaseReference mDoctorsTable;
     private DatabaseReference mPatientsTable;
+    private DatabaseReference mPicklistTable;
     private ValueEventListener mValueEventListenerDoctor;
     private ValueEventListener mValueEventListenerPatient;
+    private ValueEventListener mAdminPicklistListener;
+
+    // Services
+    private PicklistService mPicklistService;
 
     // Data information objects
     private DoctorDTO mDoctorDTO;
     private PatientDTO mPatientDTO;
     private UserDAO mUserDAO;
+    private PicklistDAO mPicklistDAO;
 
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
+
+    private List<PicklistDTO> mAdmins;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +90,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseDatabase mRef = FirebaseDatabase.getInstance();
         mDoctorsTable = mRef.getReference().child(CommonConstants.DOCTORS_TABLE);
         mPatientsTable = mRef.getReference().child(CommonConstants.PATIENTS_TABLE);
+        mPicklistTable = mRef.getReference().child(CommonConstants.PICKLIST_TABLE);
         initializeValueEventListeners();
-        mUserDAO = new UserDAO();
+        mPicklistTable.addValueEventListener(mAdminPicklistListener);
+
+        mPicklistService = new PicklistServiceImpl();
 
         // TODO: DEBUG BUTTONS ! REMOVE BEFORE DEPLOYING
         Button bQuickLogin = (Button) findViewById(R.id.b_quick_login);
@@ -106,14 +126,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 LoginActivity.this.startActivity(registerActivity);
                 break;
-            case R.id.b_quick_login:
-                mEmailView.setText("b@pa.com");
-                mPasswordView.setText("Dummy1234");
+            case R.id.b_quick_login: // TODO: DEBUG BUTTONS ! REMOVE BEFORE DEPLOYING
+                mEmailView.setText(CommonConstants.DUMMY_PATIENT_EMAIL);
+                mPasswordView.setText(CommonConstants.DUMMY_PATIENT_PASSWORD);
                 attemptLogin();
                 break;
             case R.id.b_quick_login_doctor:
-                mEmailView.setText("b@da.com");
-                mPasswordView.setText("Dummy1234");
+                mEmailView.setText(CommonConstants.DUMMY_DOCTOR_EMAIL);
+                mPasswordView.setText(CommonConstants.DUMMY_DOCTOR_PASSWORD);
                 attemptLogin();
                 break;
 
@@ -235,12 +255,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         private final String mEmail;
         private final String mPassword;
         private final Context mContext;
+        List<PicklistDTO> admins;
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         UserLoginTask(String email, String password, Context context) {
             mEmail = email;
             mPassword = password;
             mContext = context;
+//            admins = mPicklistService.getPicklist(CommonConstants.ADMINS_PICKLIST);
         }
 
         @SuppressWarnings("unchecked")
@@ -251,8 +273,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             OnSuccessListener login_success = new OnSuccessListener() {
                 @Override
                 public void onSuccess(Object o) {
-                    mDoctorsTable.addValueEventListener(mValueEventListenerDoctor);
-                    mPatientsTable.addValueEventListener(mValueEventListenerPatient);
+                    boolean isAdmin = false;
+                    for (PicklistDTO admin : mAdmins) {
+                        if (TextUtils.equals(mEmail, admin.getValue())) {
+                            isAdmin = true;
+                            break;
+                        }
+                    }
+                    if (isAdmin) {
+                        Intent adminActivity = new Intent(LoginActivity.this, AdminActivity.class);
+                        LoginActivity.this.startActivity(adminActivity);
+                    } else {
+                        mDoctorsTable.addValueEventListener(mValueEventListenerDoctor);
+                        mPatientsTable.addValueEventListener(mValueEventListenerPatient);
+                    }
                 }
             };
             OnFailureListener login_failure = new OnFailureListener() {
@@ -289,12 +323,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(LOG_TAG, "Entering onDataChange...");
-                mDoctorDTO = mUserDAO.retrieveUserFromDataSnapshotDoctor(dataSnapshot, true);
-                if (mDoctorDTO.getUserId() != null) {
+                mUserDAO = new DoctorDAOImpl();
+                mDoctorDTO = (DoctorDTO) mUserDAO.retrieveUser(dataSnapshot, true);
+                if (mDoctorDTO != null && mDoctorDTO.getUserAccountId() != null) {
                     Intent nextActivity = new Intent(LoginActivity.this, DoctorActivity.class);
                     nextActivity.putExtra(CommonConstants.DOCTOR_DTO, mDoctorDTO);
                     Log.d(LOG_TAG, "Exiting onDataChange...");
                     LoginActivity.this.startActivity(nextActivity);
+                } else {
+                    // Do not let Firebase listeners linger through the app after a login failure
+                    mDoctorsTable.removeEventListener(this);
                 }
             }
 
@@ -306,17 +344,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(LOG_TAG, "Entering onDataChange...");
-                mPatientDTO = mUserDAO.retrieveUserFromDataSnapshotPatient(dataSnapshot, true);
-                if (mPatientDTO.getUserId() != null) {
+                mUserDAO = new PatientDAOImpl();
+                mPatientDTO = (PatientDTO) mUserDAO.retrieveUser(dataSnapshot, true);
+                if (mPatientDTO != null && mPatientDTO.getUserAccountId() != null) {
                     Intent nextActivity = new Intent(LoginActivity.this, SymptomsActivity.class);
                     nextActivity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
                     Log.d(LOG_TAG, "Exiting onDataChange...");
                     LoginActivity.this.startActivity(nextActivity);
+                } else {
+                    // Do not let Firebase listeners linger through the app after a login failure
+                    mPatientsTable.removeEventListener(this);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
+        };
+
+        mAdminPicklistListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mPicklistDAO = new PicklistDAOImpl();
+                mAdmins = mPicklistDAO.retrievePicklist(dataSnapshot, CommonConstants.ADMINS_PICKLIST);
+                mPatientsTable.removeEventListener(this);
+            }
+            @Override public void onCancelled(DatabaseError databaseError) { }
         };
     }
 
