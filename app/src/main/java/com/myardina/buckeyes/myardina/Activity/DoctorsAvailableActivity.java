@@ -57,6 +57,9 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
         //setting custom toolbar dont remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        //setting back button
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initializeListeners();
 

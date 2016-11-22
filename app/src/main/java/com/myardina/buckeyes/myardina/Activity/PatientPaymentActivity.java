@@ -50,6 +50,10 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
         //setting custom toolbar dont remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        //FIXME: back button creates a null object reference
+//        //setting back button
+//        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         config = new PayPalConfiguration()
                 // Start with mock environment.  When ready, switch to sandbox (ENVIRONMENT_SANDBOX)

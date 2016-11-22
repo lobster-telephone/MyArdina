@@ -49,6 +49,10 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
         //setting custom toolbar dont remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        //TODO: Not sure which activity to go to on back press
+//        //setting back button
+//        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FirebaseDatabase mRef = FirebaseDatabase.getInstance();
         mDoctorsTable = mRef.getReference().child(CommonConstants.DOCTORS_TABLE);

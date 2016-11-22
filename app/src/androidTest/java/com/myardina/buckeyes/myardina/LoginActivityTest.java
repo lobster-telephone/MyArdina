@@ -24,12 +24,12 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 
     /**
      * Assumption: User has already registered and the account is in the database
-     * Enters username and password of a patient and checks if it goes to symptoms activity
+     * Enters valid user email and password of a patient and checks if it goes to symptoms activity
      * @throws Exception
      */
-    public void testListItemClickShouldGoToRegister() throws Exception {
+    public void testLoginGotoSymptoms() throws Exception {
         solo.unlockScreen();
-        solo.waitForActivity(LoginActivity.class, 5000);
+        solo.waitForActivity(LoginActivity.class, 1000);
 
         // check that we have the right activity
         solo.assertCurrentActivity("Expected Login activity", LoginActivity.class);
@@ -48,6 +48,85 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         solo.assertCurrentActivity("Expected Symptoms activity", SymptomsActivity.class);
         //go back to login activity
         solo.goBack();
+    }
+
+
+    /**
+     * Assumption: User has already registered and the account is in the database
+     * Enters valid user email and a incorrect password where a toast is shown
+     * @throws Exception
+     */
+    public void testLoginErrorsMessages1() throws Exception {
+        solo.unlockScreen();
+        solo.waitForActivity(LoginActivity.class, 1000);
+
+        // check that we have the right activity
+        solo.assertCurrentActivity("Expected Login activity", LoginActivity.class);
+        //add username
+        EditText email = (EditText) solo.getCurrentActivity().findViewById(R.id.email);
+        solo.enterText(email, "s@t.com");
+        //add password
+        EditText password = (EditText) solo.getCurrentActivity().findViewById(R.id.password);
+        solo.enterText(password, "Applepi");
+        //click sign in button
+        Button loginBtn = (Button) solo.getCurrentActivity().findViewById(R.id.email_sign_in_button);
+        solo.clickOnView(loginBtn);
+        //wait for cannot be logged in toast
+        solo.waitForText("user s@t.com cannot be logged in.");
+        // assert that the current activity is the LoginActivity.class
+        solo.assertCurrentActivity("Expected Login activity", LoginActivity.class);
+    }
+
+    /**
+     * Assumption: User has already registered and the account is in the database
+     * Enters an invalid email and password and user will see an error message
+     * @throws Exception
+     */
+    public void testLoginErrorsMessages2() throws Exception {
+        solo.unlockScreen();
+        solo.waitForActivity(LoginActivity.class, 1000);
+
+        // check that we have the right activity
+        solo.assertCurrentActivity("Expected Login activity", LoginActivity.class);
+        //add username
+        EditText email = (EditText) solo.getCurrentActivity().findViewById(R.id.email);
+        solo.enterText(email, "s.com");
+        //add password
+        EditText password = (EditText) solo.getCurrentActivity().findViewById(R.id.password);
+        solo.enterText(password, "Applepie");
+        //click sign in button
+        Button loginBtn = (Button) solo.getCurrentActivity().findViewById(R.id.email_sign_in_button);
+        solo.clickOnView(loginBtn);
+        //wait for error message
+        solo.waitForText("This email address is invalid");
+        // assert that the current activity is the LoginActivity.class
+        solo.assertCurrentActivity("Expected Login activity", LoginActivity.class);
+    }
+
+    /**
+     * Assumption: User has already registered and the account is in the database
+     * Enters a valid email and short password and user will see an error message
+     * @throws Exception
+     */
+    public void testLoginErrorsMessages3() throws Exception {
+        solo.unlockScreen();
+        solo.waitForActivity(LoginActivity.class, 1000);
+
+        //check that we have the right activity
+        solo.assertCurrentActivity("Expected Login activity", LoginActivity.class);
+        //add username
+        EditText email = (EditText) solo.getCurrentActivity().findViewById(R.id.email);
+        solo.enterText(email, "s@t.com");
+        //add password
+        EditText password = (EditText) solo.getCurrentActivity().findViewById(R.id.password);
+        solo.enterText(password, "App");
+        //click sign in button
+        Button loginBtn = (Button) solo.getCurrentActivity().findViewById(R.id.email_sign_in_button);
+        solo.clickOnView(loginBtn);
+        //wait for error message
+        solo.waitForText("This password is too short");
+        //assert that the current activity is the LoginActivity.class
+        solo.assertCurrentActivity("Expected Login activity", LoginActivity.class);
     }
 
     @Override

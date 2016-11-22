@@ -41,19 +41,39 @@
         <activity
             android:name=".Activity.RegisterActivity"
             android:label="@string/title_activity_register"
-            android:theme="@style/AppTheme" />
+            android:parentActivityName=".Activity.LoginActivity"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.myardina.buckeyes.myardina.Activity.LoginActivity" />
+        </activity>
         <activity
             android:name=".Activity.DoctorActivity"
             android:label="@string/title_activity_doctor"
-            android:theme="@style/AppTheme" />
+            android:parentActivityName=".Activity.LoginActivity"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.myardina.buckeyes.myardina.Activity.LoginActivity" />
+        </activity>
         <activity
             android:name=".Activity.SymptomsActivity"
             android:label="@string/title_activity_symptoms"
-            android:theme="@style/AppTheme" />
+            android:parentActivityName=".Activity.LoginActivity"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.myardina.buckeyes.myardina.Activity.LoginActivity" />
+        </activity>
         <activity
             android:name=".Activity.PatientPaymentActivity"
             android:label="@string/title_activity_payment"
-            android:theme="@style/AppTheme" />
+            android:parentActivityName=".Activity.SymptomsActivity"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.myardina.buckeyes.myardina.Activity.SymptomsActivity" />
+        </activity>
         <activity
             android:name=".Activity.TeleMedicineActivity"
             android:label="@string/title_activity_tele_medicine"
@@ -65,7 +85,12 @@
         <activity
             android:name=".Activity.AdditionalInformationActivity"
             android:label="@string/title_activity_additional_information"
-            android:theme="@style/AppTheme" />
+            android:parentActivityName=".Activity.RegisterActivity"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.myardina.buckeyes.myardina.Activity.RegisterActivity" />
+        </activity>
         <activity
             android:name=".Activity.AdminActivity"
             android:label="@string/title_activity_admin"

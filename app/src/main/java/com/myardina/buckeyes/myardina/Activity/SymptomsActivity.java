@@ -40,6 +40,9 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
         //setting custom toolbar dont remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        //setting back button
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initialize UI elements
         Button bHead = (Button) findViewById(R.id.mv_head_button);
@@ -60,7 +63,7 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
 
         mSelList = new ArrayList<>();
         mSymptoms = new ArrayList<>();
-
+        //FIXME: back button creates null object reference to this
         mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
         Log.d(LOG_TAG, "Exiting onCreate...");
     }

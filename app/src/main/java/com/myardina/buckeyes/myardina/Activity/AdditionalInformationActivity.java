@@ -41,6 +41,9 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
         //setting custom toolbar dont remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        //setting back button
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initialize UI elements
         mFirstNameView = (EditText) findViewById(R.id.etFirstName);
