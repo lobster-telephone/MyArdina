@@ -1,15 +1,15 @@
 package com.myardina.buckeyes.myardina.DTO;
 
-import java.io.Serializable;
+import android.os.Parcel;
 
 /**
  * @author by Tyler on 10/23/2016.
  */
-public abstract class UserDTO implements Serializable {
+public abstract class UserDTO extends BaseDTO {
 
     private String firstName;
     private String lastName;
-    private String userId;
+    private String userAccountId;
     private String email;
     private String userKey;
 
@@ -29,12 +29,10 @@ public abstract class UserDTO implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getUserId() {
-        return userId;
-    }
+    public String getUserAccountId() { return userAccountId; }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserAccountId(String userAccountId) {
+        this.userAccountId = userAccountId;
     }
 
     public String getEmail() {
@@ -51,5 +49,28 @@ public abstract class UserDTO implements Serializable {
 
     public void setUserKey(String userKey) {
         this.userKey = userKey;
+    }
+
+    // PARCEL OBJECT
+
+    public UserDTO() { super(); }
+
+    public UserDTO(Parcel in){
+        super(in);
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        this.userAccountId = in.readString();
+        this.email = in.readString();
+        this.userKey = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeString(this.userAccountId);
+        dest.writeString(this.email);
+        dest.writeString(this.userKey);
     }
 }

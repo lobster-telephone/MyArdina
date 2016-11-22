@@ -61,5 +61,9 @@
     <string name="title_activity_additional_information">AdditionalInformationActivity</string>
     <string name="prompt_location">Location</string>
     <string name="prompt_phone_number">Phone Number</string>
+    <string name="title_activity_admin">AdminActivity</string>
+
+    <!-- Admin -->
+    <string name="pending_payments">Pending Payments</string>
 
 </resources>

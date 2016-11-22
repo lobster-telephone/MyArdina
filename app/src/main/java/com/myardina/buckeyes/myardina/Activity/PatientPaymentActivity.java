@@ -11,11 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
+import com.myardina.buckeyes.myardina.DAO.Impl.PaymentDAOImpl;
+import com.myardina.buckeyes.myardina.DAO.PaymentDAO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
+import com.myardina.buckeyes.myardina.DTO.PaymentDTO;
 import com.myardina.buckeyes.myardina.R;
+import com.myardina.buckeyes.myardina.Sevice.Impl.PaymentServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.PaymentService;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
@@ -31,8 +34,11 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
     private static final String LOG_TAG = "PATIENT_PAYMENT";
 
     // Data objects
-    private DatabaseReference paymentsTable;
     private PatientDTO mPatientDTO;
+    private PaymentDAO mPaymentDAO;
+
+    // Services
+    private PaymentService mPaymentService;
 
     private static PayPalConfiguration config;
 
@@ -58,6 +64,11 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         startService(intent);
 
+        // TESTING PAYMENTS
+        // Be sure to be in sandbox mode and use the following credentials:
+        // username: Michaelberkovich310-buyer@gmail.com
+        // password: myardina
+
         // UI References
         Button paypalLoginButton = (Button) findViewById(R.id.login_paypal);
         paypalLoginButton.setOnClickListener(this);
@@ -65,6 +76,8 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
         continueButton.setOnClickListener(this);
 
         mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
+        mPaymentDAO = new PaymentDAOImpl();
+        mPaymentService = new PaymentServiceImpl();
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
 
@@ -124,12 +137,11 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
                     // see https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
                     // for more details.
 
-                    //confirm payment to our database
-                    FirebaseDatabase ref = FirebaseDatabase.getInstance();
-                    paymentsTable = ref.getReference(CommonConstants.PAYMENTS_TABLE);
-                    DatabaseReference childRef = PatientPaymentActivity.this.paymentsTable.push();
-                    childRef.child(CommonConstants.PAYMENTS_TABLE).setValue(confirm);
-                    childRef.child(CommonConstants.USER_ID).setValue(mPatientDTO.getUserKey());
+                    PaymentDTO paymentDTO = new PaymentDTO();
+                    paymentDTO.setPaymentConfirmation(mPaymentService.convertPayConfirm(confirm));
+                    paymentDTO.setPatientId(mPatientDTO.getUserKey());
+                    paymentDTO.setDoctorId(CommonConstants.EMPTY);
+                    mPaymentDAO.savePayment(paymentDTO);
 
                     //toast that says payment successful
                     Toast created_user_toast = Toast.makeText(getApplicationContext(), "Payment successful!", Toast.LENGTH_SHORT);
@@ -139,6 +151,7 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
                     //gos to doctors available activity
                     Intent doctorsAvailableActivity = new Intent(PatientPaymentActivity.this, DoctorsAvailableActivity.class);
                     doctorsAvailableActivity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
+                    doctorsAvailableActivity.putExtra(CommonConstants.PAYMENT_DTO, paymentDTO);
                     PatientPaymentActivity.this.startActivity(doctorsAvailableActivity);
 
                 } catch (JSONException e) {

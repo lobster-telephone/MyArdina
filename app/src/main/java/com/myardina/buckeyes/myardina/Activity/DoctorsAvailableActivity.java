@@ -18,8 +18,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
 import com.myardina.buckeyes.myardina.DAO.DoctorDAO;
+import com.myardina.buckeyes.myardina.DAO.Impl.DoctorDAOImpl;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
+import com.myardina.buckeyes.myardina.DTO.PaymentDTO;
 import com.myardina.buckeyes.myardina.R;
 
 import java.util.ArrayList;
@@ -29,19 +31,19 @@ import java.util.Map;
 
 public class DoctorsAvailableActivity extends AppCompatActivity {
 
-    // Data information objects
-    private DoctorDAO mDoctorDAO;
-    private PatientDTO mPatientDTO;
-
-    private DatabaseReference mDoctorsTable;
-
     // Activity log tag
     private static final String LOG_TAG = "DOCTORS_AVAILABLE_ACT";
 
-    private ListView lvDoctorListView;
+    // Data information objects
+    private DoctorDAO mDoctorDAO;
+    private PatientDTO mPatientDTO;
+    private PaymentDTO mPaymentDTO;
+
+    private DatabaseReference mDoctorsTable;
+
     private ArrayAdapter<String> mAdapter;
     private List<String> names;
-    private Map<Integer, String> userIds;
+    private Map<Integer, String> userKeys;
 
     // Listeners
     private ValueEventListener mValueEventListener;
@@ -59,19 +61,19 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
         initializeListeners();
 
         names = new ArrayList<>();
-        userIds = new HashMap<>();
+        userKeys = new HashMap<>();
 
-        lvDoctorListView = (ListView) findViewById(R.id.lvDoctorsAvailableList);
+        ListView lvDoctorListView = (ListView) findViewById(R.id.lvDoctorsAvailableList);
         lvDoctorListView.setOnItemClickListener(mOnItemClickListener);
-        mAdapter = new ArrayAdapter<>(DoctorsAvailableActivity.this, android.R.layout.simple_list_item_1, names);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, names);
         lvDoctorListView.setAdapter(mAdapter);
 
         mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
-        mDoctorDAO = new DoctorDAO();
+        mPaymentDTO = (PaymentDTO) getIntent().getExtras().get(CommonConstants.PAYMENT_DTO);
+        mDoctorDAO = new DoctorDAOImpl();
 
         FirebaseDatabase mRef = FirebaseDatabase.getInstance();
         mDoctorsTable = mRef.getReference().child(CommonConstants.DOCTORS_TABLE);
-        mDoctorsTable.addValueEventListener(mValueEventListener);
 
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
@@ -87,7 +89,7 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
                 names.clear();
                 List<DoctorDTO> availableDoctors = mDoctorDAO.retrieveAvailableDoctors(dataSnapshot);
                 for (DoctorDTO doctor : availableDoctors) {
-                    userIds.put(names.size(), doctor.getUserKey());
+                    userKeys.put(names.size(), doctor.getUserKey());
                     String name = doctor.getFirstName() + CommonConstants.SPACE + doctor.getLastName();
                     Log.d(LOG_TAG, "Name: " + name);
                     names.add(name);
@@ -117,13 +119,13 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
                 switch (viewId) {
                     case R.id.lvDoctorsAvailableList:
                         DoctorDTO doctorDTO = new DoctorDTO();
-                        doctorDTO.setUserKey(userIds.get(position));
-                        doctorDTO.setRequested(true);
-                        doctorDTO.setAvailable(false);
+                        doctorDTO.setUserKey(userKeys.get(position));
                         doctorDTO.setRequesterPhoneNumber(mPatientDTO.getPhoneNumber());
                         mDoctorDAO.updateDoctorToNotAvailable(doctorDTO);
                         Intent activity = new Intent(DoctorsAvailableActivity.this, TeleMedicineActivity.class);
                         activity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
+                        mPaymentDTO.setDoctorId(doctorDTO.getTableKey());
+                        activity.putExtra(CommonConstants.PAYMENT_DTO, mPaymentDTO);
                         mDoctorsTable.removeEventListener(mValueEventListener);
                         DoctorsAvailableActivity.this.startActivity(activity);
                         break;
@@ -142,16 +144,42 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
      */
 
     @Override
-    public void onStart() {
-        Log.d(LOG_TAG, "Entering onStart...");
+    protected void onStart(){
+        System.out.println("onStart method for LoginActivity being called");
         super.onStart();
-        Log.d(LOG_TAG, "Exiting onItemClick...");
     }
 
     @Override
-    public void onResume() {
-        Log.d(LOG_TAG, "Entering onResume...");
+    protected void onRestart(){
+        System.out.println("onRestart method for LoginActivity being called");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onPause(){
+        System.out.println("onPause method for LoginActivity being called");
+        // Release db listener
+        mDoctorsTable.removeEventListener(mValueEventListener);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume(){
+        System.out.println("onResume method for LoginActivity being called");
+        mDoctorsTable.addValueEventListener(mValueEventListener);
         super.onResume();
-        Log.d(LOG_TAG, "Exiting onResume...");
+    }
+
+    @Override
+    protected void onStop()
+    {
+        System.out.println("onStop method for LoginActivity being called");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy(){
+        System.out.println("onDestroy method for LoginActivity being called");
+        super.onDestroy();
     }
 }

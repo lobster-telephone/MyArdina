@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
+import com.myardina.buckeyes.myardina.DAO.Impl.DoctorDAOImpl;
+import com.myardina.buckeyes.myardina.DAO.Impl.PatientDAOImpl;
 import com.myardina.buckeyes.myardina.DAO.UserDAO;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
@@ -49,9 +51,10 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
         mContinue.setOnClickListener(this);
 
         // Initialize data objects
-        mUserDAO = new UserDAO();
+        mUserDAO = new PatientDAOImpl();
         mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
         if (mPatientDTO == null) {
+            mUserDAO = new DoctorDAOImpl();
             mDoctorDTO = (DoctorDTO) getIntent().getExtras().get(CommonConstants.DOCTOR_DTO);
         }
 
@@ -190,12 +193,12 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
             mPatientDTO.setFirstName(mFirstNameView.getText().toString());
             mPatientDTO.setLastName(mLastNameView.getText().toString());
             mPatientDTO.setPhoneNumber(mPhoneNumberView.getText().toString());
-            mUserDAO.saveAdditionalInformationPatient(mPatientDTO);
+            mUserDAO.saveAdditionalInformation(mPatientDTO);
         } else {
             mDoctorDTO.setFirstName(mFirstNameView.getText().toString());
             mDoctorDTO.setLastName(mLastNameView.getText().toString());
             mDoctorDTO.setLocation(mLocationView.getText().toString());
-            mUserDAO.saveAdditionalInformationDoctor(mDoctorDTO);
+            mUserDAO.saveAdditionalInformation(mDoctorDTO);
         }
         Log.d(LOG_TAG, "Exiting saveFormInformation...");
     }
