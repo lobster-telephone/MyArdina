@@ -23,6 +23,12 @@ public class TeleMedicineActivity extends AppCompatActivity  {
         //setting custom toolbar dont remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        //TODO: not sure which parent activity to go back to (need to add parent in Manifest)
+        //setting back button
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         Log.d(LOG_TAG, "Entering onCreate...");
 
         // add PhoneStateListener
