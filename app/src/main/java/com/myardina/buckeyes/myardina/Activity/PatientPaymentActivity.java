@@ -12,9 +12,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DAO.Impl.PaymentDAOImpl;
-import com.myardina.buckeyes.myardina.DAO.PaymentDAO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
+import com.myardina.buckeyes.myardina.DTO.Payment.PayConfirmation;
 import com.myardina.buckeyes.myardina.DTO.PaymentDTO;
 import com.myardina.buckeyes.myardina.R;
 import com.myardina.buckeyes.myardina.Sevice.Impl.PaymentServiceImpl;
@@ -35,7 +34,6 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
 
     // Data objects
     private PatientDTO mPatientDTO;
-    private PaymentDAO mPaymentDAO;
 
     // Services
     private PaymentService mPaymentService;
@@ -44,10 +42,10 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_payment);
-        Log.d(LOG_TAG, "Entering onCreate...");
-        //setting custom toolbar dont remove
+        //setting custom toolbar don't remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         //FIXME: back button creates a null object reference
@@ -82,7 +80,6 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
         continueButton.setOnClickListener(this);
 
         mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
-        mPaymentDAO = new PaymentDAOImpl();
         mPaymentService = new PaymentServiceImpl();
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
@@ -144,10 +141,11 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
                     // for more details.
 
                     PaymentDTO paymentDTO = new PaymentDTO();
-                    paymentDTO.setPaymentConfirmation(mPaymentService.convertPayConfirm(confirm));
-                    paymentDTO.setPatientId(mPatientDTO.getUserKey());
+                    paymentDTO.setPaymentConfirmation(new PayConfirmation(confirm));
+                    paymentDTO.setPatientId(mPatientDTO.getTableKey());
                     paymentDTO.setDoctorId(CommonConstants.EMPTY);
-                    mPaymentDAO.savePayment(paymentDTO);
+                    paymentDTO.setAmountOwedToDoctor(confirm.getPayment().getAmountAsLocalizedString());
+                    mPaymentService.savePayment(paymentDTO);
 
                     //toast that says payment successful
                     Toast created_user_toast = Toast.makeText(getApplicationContext(), "Payment successful!", Toast.LENGTH_SHORT);
@@ -171,7 +169,7 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
         else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
             Log.i(LOG_TAG, "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
         }
-        Log.d(LOG_TAG, "Exiting onCreate");
+        Log.d(LOG_TAG, "Exiting onActivityResult");
     }
 
     /**

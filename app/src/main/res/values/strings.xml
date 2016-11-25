@@ -68,5 +68,9 @@
     <string name="pending_payments">Pending Payments</string>
     <string name="choose_symptoms">Please select a body part to choose symptoms</string>
     <string name="paypal_transaction">A payment of $79 is required to use our service. Please login to Paypal to make your transaction.</string>
+    <string name="title_activity_update_payment">UpdatePaymentActivity</string>
+    <string name="update_payment">Has the doctor been paid for this visit?</string>
+    <string name="pay_doctor">Doctor Paid</string>
+    <string name="back">Back</string>
 
 </resources>

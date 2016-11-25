@@ -14,18 +14,18 @@ public class CommonConstants {
     public static final String DOCTOR_DTO = "DOCTOR_DTO";
     public static final String PATIENT_DTO = "PATIENT_DTO";
     public static final String PAYMENT_DTO = "PAYMENT_DTO";
-    public static final String ADMIN_DTO = "ADMIN_DTO";
+    public static final String PENDING_PAYMENT_DTO = "PENDING_PAYMENT_DTO";
 
     // DATABASE CONSTANTS
     public static final String FIRST_NAME_COL = "firstName";
     public static final String LAST_NAME_COL = "lastName";
     public static final String REQUESTER_PHONE_NUMBER_COL = "requesterPhoneNumber";
     public static final String AVAILABLE_COL = "available";
-    public static final String VERIFIED_DOCTOR_COL = "verifiedDoctor";
     public static final String REQUESTED_COL = "requested";
-    public static final String EMAIL_COL = "email";
     public static final String LOCATION_COL = "location";
     public static final String PHONE_NUMBER_COL = "phoneNumber";
+    public static final String DOCTOR_PAID_COL = "doctorPaid";
+    public static final String DOCTOR_ID_COL = "doctorId";
     public static final String DOCTORS_TABLE = "Doctors";
     public static final String PATIENTS_TABLE = "Patients";
     public static final String PAYMENTS_TABLE = "Payments";
@@ -64,7 +64,8 @@ public class CommonConstants {
 
     // ADMIN ACTIVITY
     public static final String NO_PAYMENTS_MESSAGE = "No payments are currently pending.";
-    public static final String FROM = "FROM";
+    public static final String FROM = " FROM ";
+    public static final String ERROR_RETRIEVE_DOCTOR = "An error occurred while retrieving payment details...";
 
     // PICKLIST KEYS
     public static final String ADMINS_PICKLIST = "Admins";

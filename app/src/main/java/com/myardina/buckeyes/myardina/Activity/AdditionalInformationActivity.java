@@ -11,19 +11,19 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DAO.Impl.DoctorDAOImpl;
-import com.myardina.buckeyes.myardina.DAO.Impl.PatientDAOImpl;
-import com.myardina.buckeyes.myardina.DAO.UserDAO;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.R;
+import com.myardina.buckeyes.myardina.Sevice.Impl.DoctorServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.Impl.PatientServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.UserService;
 
 public class AdditionalInformationActivity extends AppCompatActivity implements View.OnFocusChangeListener, View.OnClickListener{
 
     private static final String LOG_TAG = "ADDITIONAL_INFORMATION";
 
     // Data access and transfer objects
-    private UserDAO mUserDAO;
+    private UserService mUserService;
     private PatientDTO mPatientDTO;
     private DoctorDTO mDoctorDTO;
 
@@ -35,10 +35,10 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_additional_information);
-        Log.d(LOG_TAG, "Entering onCreate...");
-        //setting custom toolbar dont remove
+        //setting custom toolbar don't remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         //setting back button
@@ -60,10 +60,10 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
         mContinue.setOnClickListener(this);
 
         // Initialize data objects
-        mUserDAO = new PatientDAOImpl();
+        mUserService = new PatientServiceImpl();
         mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
         if (mPatientDTO == null) {
-            mUserDAO = new DoctorDAOImpl();
+            mUserService = new DoctorServiceImpl();
             mDoctorDTO = (DoctorDTO) getIntent().getExtras().get(CommonConstants.DOCTOR_DTO);
         }
 
@@ -202,12 +202,12 @@ public class AdditionalInformationActivity extends AppCompatActivity implements 
             mPatientDTO.setFirstName(mFirstNameView.getText().toString());
             mPatientDTO.setLastName(mLastNameView.getText().toString());
             mPatientDTO.setPhoneNumber(mPhoneNumberView.getText().toString());
-            mUserDAO.saveAdditionalInformation(mPatientDTO);
+            mUserService.saveAdditionalInformation(mPatientDTO);
         } else {
             mDoctorDTO.setFirstName(mFirstNameView.getText().toString());
             mDoctorDTO.setLastName(mLastNameView.getText().toString());
             mDoctorDTO.setLocation(mLocationView.getText().toString());
-            mUserDAO.saveAdditionalInformation(mDoctorDTO);
+            mUserService.saveAdditionalInformation(mDoctorDTO);
         }
         Log.d(LOG_TAG, "Exiting saveFormInformation...");
     }

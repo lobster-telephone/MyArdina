@@ -1,5 +1,6 @@
 package com.myardina.buckeyes.myardina.Sevice;
 
+import com.google.firebase.database.DataSnapshot;
 import com.myardina.buckeyes.myardina.DTO.PicklistDTO;
 
 import java.util.List;
@@ -9,6 +10,6 @@ import java.util.List;
  */
 public interface PicklistService extends BaseService {
 
-    List<PicklistDTO> getPicklist(String picklistKey);
+    List<PicklistDTO> getPicklist(DataSnapshot snapshot, String picklistKey);
 
 }

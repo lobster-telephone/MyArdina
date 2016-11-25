@@ -34,10 +34,10 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptoms);
-        Log.d(LOG_TAG, "Entering onCreate...");
-        //setting custom toolbar dont remove
+        //setting custom toolbar don't remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         //setting back button
@@ -45,7 +45,6 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
 
         // Initialize UI elements
         Button bHead = (Button) findViewById(R.id.mv_head_button);
@@ -68,7 +67,7 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
         mSymptoms = new ArrayList<>();
         //FIXME: back button creates null object reference to this
         mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
-        Log.d(LOG_TAG, "Exiting onCreate...");
+        Log.d(LOG_TAG, "Exiting OnCreate...");
     }
 
     /**
@@ -149,7 +148,7 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
                         .setTitle(getString(R.string.choose_3_symptoms))
                         .setMultiChoiceItems(symptomsList, bl, new DialogInterface.OnMultiChoiceClickListener() {
 
-                            //still need to write code here that makes sure that when the alertdialog is initialized, it already checks the items that were selected before
+                            //still need to write code here that makes sure that when the alert dialog is initialized, it already checks the items that were selected before
                             //for example one clicks on the head and selects pink eye, then clicks out, and then opens the alert dialog for head again,
                             //make sure that pink eye checkbox is selected, otherwise can have problems with duplicates of symptoms arising
 

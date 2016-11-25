@@ -29,25 +29,22 @@ public class PatientDAOImpl extends UserDAOImpl implements PatientDAO {
     }
 
     @Override
-    public void saveAdditionalInformation(UserDTO userDTO) {
-        Log.d(LOG_TAG, "Entering saveAdditionalInformation...");
-        Map<String, Object> insertMap = new HashMap<>();
+    public void saveRegisterInformation(UserDTO userDTO) {
+        Log.d(LOG_TAG, "Entering saveRegisterInformation...");
         PatientDTO patientDTO = (PatientDTO) userDTO;
-        insertMap.put(CommonConstants.FIRST_NAME_COL, patientDTO.getFirstName());
-        insertMap.put(CommonConstants.LAST_NAME_COL, patientDTO.getLastName());
-        insertMap.put(CommonConstants.PHONE_NUMBER_COL, patientDTO.getPhoneNumber());
-        insert(insertMap, CommonConstants.PATIENTS_TABLE, patientDTO.getUserKey());
-        Log.d(LOG_TAG, "Exiting saveAdditionalInformation...");
+        insert(patientDTO, CommonConstants.PATIENTS_TABLE);
+        Log.d(LOG_TAG, "Exiting saveRegisterInformation...");
     }
 
     @Override
-    public void saveRegisterInformation(UserDTO userDTO) {
-        Log.d(LOG_TAG, "Entering saveRegisterInformation...");
-        Map<String, Object> insertMap = new HashMap<>();
+    public void saveAdditionalInformation(UserDTO userDTO) {
+        Log.d(LOG_TAG, "Entering saveAdditionalInformation...");
+        Map<String, Object> updateMap = new HashMap<>();
         PatientDTO patientDTO = (PatientDTO) userDTO;
-        insertMap.put(CommonConstants.EMAIL_COL, patientDTO.getEmail());
-        insertMap.put(CommonConstants.USER_ACCOUNT_ID, patientDTO.getUserAccountId());
-        insert(insertMap, CommonConstants.PATIENTS_TABLE, patientDTO.getUserKey());
-        Log.d(LOG_TAG, "Exiting saveRegisterInformation...");
+        updateMap.put(CommonConstants.FIRST_NAME_COL, patientDTO.getFirstName());
+        updateMap.put(CommonConstants.LAST_NAME_COL, patientDTO.getLastName());
+        updateMap.put(CommonConstants.PHONE_NUMBER_COL, patientDTO.getPhoneNumber());
+        update(updateMap, CommonConstants.PATIENTS_TABLE, patientDTO.getTableKey());
+        Log.d(LOG_TAG, "Exiting saveAdditionalInformation...");
     }
 }

@@ -18,9 +18,10 @@ public class TeleMedicineActivity extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tele_medicine);
-        //setting custom toolbar dont remove
+        //setting custom toolbar don't remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         //TODO: not sure which parent activity to go back to (need to add parent in Manifest)
@@ -29,7 +30,6 @@ public class TeleMedicineActivity extends AppCompatActivity  {
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        Log.d(LOG_TAG, "Entering onCreate...");
 
         // add PhoneStateListener
         PhoneCallListener phoneListener = new PhoneCallListener();
@@ -48,6 +48,7 @@ public class TeleMedicineActivity extends AppCompatActivity  {
 
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
+            Log.d(LOG_TAG, "Entering onCallStateChanged...");
 
             if (TelephonyManager.CALL_STATE_RINGING == state) {
                 // phone ringing
@@ -80,6 +81,7 @@ public class TeleMedicineActivity extends AppCompatActivity  {
                     isPhoneCalling = false;
                 }
             }
+            Log.d(LOG_TAG, "Exiting onCallStateChanged...");
         }
     }
 }

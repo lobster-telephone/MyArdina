@@ -25,17 +25,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DAO.Impl.DoctorDAOImpl;
-import com.myardina.buckeyes.myardina.DAO.Impl.PatientDAOImpl;
-import com.myardina.buckeyes.myardina.DAO.Impl.PicklistDAOImpl;
-import com.myardina.buckeyes.myardina.DAO.PicklistDAO;
-import com.myardina.buckeyes.myardina.DAO.UserDAO;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.DTO.PicklistDTO;
 import com.myardina.buckeyes.myardina.R;
+import com.myardina.buckeyes.myardina.Sevice.Impl.DoctorServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.Impl.PatientServiceImpl;
 import com.myardina.buckeyes.myardina.Sevice.Impl.PicklistServiceImpl;
 import com.myardina.buckeyes.myardina.Sevice.PicklistService;
+import com.myardina.buckeyes.myardina.Sevice.UserService;
 
 import java.util.List;
 
@@ -57,12 +55,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     // Services
     private PicklistService mPicklistService;
+    private UserService mUserService;
 
     // Data information objects
     private DoctorDTO mDoctorDTO;
     private PatientDTO mPatientDTO;
-    private UserDAO mUserDAO;
-    private PicklistDAO mPicklistDAO;
 
     // UI references.
     private EditText mEmailView;
@@ -255,14 +252,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         private final String mEmail;
         private final String mPassword;
         private final Context mContext;
-        List<PicklistDTO> admins;
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         UserLoginTask(String email, String password, Context context) {
             mEmail = email;
             mPassword = password;
             mContext = context;
-//            admins = mPicklistService.getPicklist(CommonConstants.ADMINS_PICKLIST);
         }
 
         @SuppressWarnings("unchecked")
@@ -319,12 +314,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initializeValueEventListeners() {
+        Log.d(LOG_TAG, "Entering initializeValueEventListeners...");
         mValueEventListenerDoctor = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(LOG_TAG, "Entering onDataChange...");
-                mUserDAO = new DoctorDAOImpl();
-                mDoctorDTO = (DoctorDTO) mUserDAO.retrieveUser(dataSnapshot, true);
+                mUserService = new DoctorServiceImpl();
+                mDoctorDTO = (DoctorDTO) mUserService.retrieveUser(dataSnapshot, true);
                 if (mDoctorDTO != null && mDoctorDTO.getUserAccountId() != null) {
                     Intent nextActivity = new Intent(LoginActivity.this, DoctorActivity.class);
                     nextActivity.putExtra(CommonConstants.DOCTOR_DTO, mDoctorDTO);
@@ -334,6 +330,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     // Do not let Firebase listeners linger through the app after a login failure
                     mDoctorsTable.removeEventListener(this);
                 }
+                Log.d(LOG_TAG, "Exiting onDataChange...");
             }
 
             @Override
@@ -344,8 +341,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(LOG_TAG, "Entering onDataChange...");
-                mUserDAO = new PatientDAOImpl();
-                mPatientDTO = (PatientDTO) mUserDAO.retrieveUser(dataSnapshot, true);
+                mUserService = new PatientServiceImpl();
+                mPatientDTO = (PatientDTO) mUserService.retrieveUser(dataSnapshot, true);
                 if (mPatientDTO != null && mPatientDTO.getUserAccountId() != null) {
                     Intent nextActivity = new Intent(LoginActivity.this, SymptomsActivity.class);
                     nextActivity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
@@ -364,12 +361,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mAdminPicklistListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mPicklistDAO = new PicklistDAOImpl();
-                mAdmins = mPicklistDAO.retrievePicklist(dataSnapshot, CommonConstants.ADMINS_PICKLIST);
+                Log.d(LOG_TAG, "Entering onDataChange...");
+                mAdmins = mPicklistService.getPicklist(dataSnapshot, CommonConstants.ADMINS_PICKLIST);
                 mPatientsTable.removeEventListener(this);
+                Log.d(LOG_TAG, "Exiting onDataChange...");
             }
             @Override public void onCancelled(DatabaseError databaseError) { }
         };
+        Log.d(LOG_TAG, "Exiting initializeValueEventListeners...");
     }
 
     /**
@@ -396,6 +395,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // Release db listener
         mDoctorsTable.removeEventListener(mValueEventListenerDoctor);
         mPatientsTable.removeEventListener(mValueEventListenerPatient);
+        mPicklistTable.removeEventListener(mAdminPicklistListener);
         super.onPause();
     }
 

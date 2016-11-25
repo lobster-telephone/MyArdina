@@ -1,9 +1,11 @@
 package com.myardina.buckeyes.myardina.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -15,16 +17,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DAO.Impl.PaymentDAOImpl;
-import com.myardina.buckeyes.myardina.DAO.PaymentDAO;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
-import com.myardina.buckeyes.myardina.DTO.PaymentDTO;
+import com.myardina.buckeyes.myardina.DTO.PendingPaymentDTO;
 import com.myardina.buckeyes.myardina.R;
-import com.myardina.buckeyes.myardina.Sevice.DoctorService;
-import com.myardina.buckeyes.myardina.Sevice.Impl.DoctorServiceImpl;
-import com.myardina.buckeyes.myardina.Sevice.Impl.PatientServiceImpl;
-import com.myardina.buckeyes.myardina.Sevice.PatientService;
+import com.myardina.buckeyes.myardina.Sevice.Impl.PaymentServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.PaymentService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,20 +35,17 @@ public class AdminActivity extends AppCompatActivity {
     private static final String LOG_TAG = "ADMIN_ACTIVITY";
 
     // Data information objects
-    private PaymentDAO mPaymentDAO;
-
-    private DatabaseReference mPaymentsTable;
+    private DatabaseReference mDatabase;
 
     // Services
-    private DoctorService mDoctorService;
-    private PatientService mPatientService;
+    private PaymentService mPaymentService;
 
     private ArrayAdapter<String> mAdapter;
     private List<String> textItems;
-    private Map<Integer, String> paymentKeys;
+    private Map<Integer, PendingPaymentDTO> mPayments;
 
     // Listeners
-    private ValueEventListener mValueEventListener;
+    private ValueEventListener mDatabaseListener;
     private AdapterView.OnItemClickListener mOnItemClickListener;
 
     @Override
@@ -58,47 +53,64 @@ public class AdminActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setting custom toolbar don't remove
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
 
         initializeListeners();
 
         textItems = new ArrayList<>();
-        paymentKeys = new HashMap<>();
+        mPayments = new HashMap<>();
 
         ListView lvDoctorListView = (ListView) findViewById(R.id.lvPendingPaymentsList);
         lvDoctorListView.setOnItemClickListener(mOnItemClickListener);
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, textItems);
         lvDoctorListView.setAdapter(mAdapter);
 
-        mPaymentDAO = new PaymentDAOImpl();
-        mDoctorService = new DoctorServiceImpl();
-        mPatientService = new PatientServiceImpl();
+        mPaymentService = new PaymentServiceImpl();
 
         FirebaseDatabase mRef = FirebaseDatabase.getInstance();
-        mPaymentsTable = mRef.getReference().child(CommonConstants.PAYMENTS_TABLE);
+        mDatabase = mRef.getReference();
 
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
 
     private void initializeListeners() {
-        mValueEventListener = new ValueEventListener() {
-            /**
-             * Live update the list of available textItems displayed to the user
-             */
+
+        mOnItemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(LOG_TAG, "Entering onItemClick...");
+                int viewId = parent.getId();
+                switch (viewId) {
+                    case R.id.lvPendingPaymentsList:
+                        PendingPaymentDTO pendingPaymentDTO = mPayments.get(position);
+                        Intent activity = new Intent(AdminActivity.this, UpdatePaymentActivity.class);
+                        activity.putExtra(CommonConstants.PENDING_PAYMENT_DTO, pendingPaymentDTO);
+                        mDatabase.removeEventListener(mDatabaseListener);
+                        AdminActivity.this.startActivity(activity);
+                        break;
+                    default:
+                        break;
+                }
+                Log.d(LOG_TAG, "Exiting onItemClick...");
+            }
+        };
+
+        mDatabaseListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(LOG_TAG, "Entering onDataChange...");
                 textItems.clear();
-                List<PaymentDTO> pendingPayments = mPaymentDAO.retrievePendingPayments(dataSnapshot);
-                for (PaymentDTO payment : pendingPayments) {
-                    paymentKeys.put(textItems.size(), payment.getTableKey());
-                    DoctorDTO doctorDTO = (DoctorDTO) mDoctorService.retrieveFromId(payment.getDoctorId());
+                List<PendingPaymentDTO> pendingPayments = mPaymentService.retrievePendingPayments(dataSnapshot);
+                for (PendingPaymentDTO payment : pendingPayments) {
+                    DoctorDTO doctorDTO = payment.getDoctorDTO();
+                    PatientDTO patientDTO = payment.getPatientDTO();
                     String doctorName = doctorDTO.getFirstName() + CommonConstants.SPACE + doctorDTO.getLastName();
-                    PatientDTO patientDTO = (PatientDTO) mPatientService.retrieveFromId(payment.getPatientId());
                     String patientName = patientDTO.getFirstName() + CommonConstants.SPACE + patientDTO.getLastName();
-                    String text = doctorName + CommonConstants.FROM + patientName;
-                    textItems.add(text);
+                    String displayText = doctorName + CommonConstants.FROM + patientName;
+                    mPayments.put(textItems.size(), payment);
+                    textItems.add(displayText);
                 }
 
                 if (textItems.size() > 0) {
@@ -111,35 +123,9 @@ public class AdminActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(LOG_TAG, "Entering onCancelled...");
-                Log.d(LOG_TAG, "ERROR : " + databaseError.getMessage());
-                Log.d(LOG_TAG, "Exiting onCancelled...");
+
             }
         };
-
-//        mOnItemClickListener = new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Log.d(LOG_TAG, "Entering onItemClick...");
-//                int viewId = parent.getId();
-//                switch (viewId) {
-//                    case R.id.lvDoctorsAvailableList:
-//                        DoctorDTO doctorDTO = new DoctorDTO();
-//                        doctorDTO.setUserKey(paymentKeys.get(position));
-//                        doctorDTO.setRequesterPhoneNumber(mPatientDTO.getPhoneNumber());
-//                        mDoctorDAO.updateDoctorToNotAvailable(doctorDTO);
-//                        Intent activity = new Intent(DoctorsAvailableActivity.this, TeleMedicineActivity.class);
-//                        activity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
-//                        activity.putExtra(CommonConstants.PAYMENT_DTO, mPaymentDTO);
-//                        mDoctorsTable.removeEventListener(mValueEventListener);
-//                        DoctorsAvailableActivity.this.startActivity(activity);
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                Log.d(LOG_TAG, "Exiting onItemClick...");
-//            }
-//        };
     }
 
     /**
@@ -164,14 +150,14 @@ public class AdminActivity extends AppCompatActivity {
     protected void onPause(){
         System.out.println("onPause method for LoginActivity being called");
         // Release db listener
-        mPaymentsTable.removeEventListener(mValueEventListener);
+        mDatabase.removeEventListener(mDatabaseListener);
         super.onPause();
     }
 
     @Override
     protected void onResume(){
         System.out.println("onResume method for LoginActivity being called");
-        mPaymentsTable.addValueEventListener(mValueEventListener);
+        mDatabase.addValueEventListener(mDatabaseListener);
         super.onResume();
     }
 

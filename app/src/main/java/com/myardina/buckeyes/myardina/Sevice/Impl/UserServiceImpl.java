@@ -1,5 +1,6 @@
 package com.myardina.buckeyes.myardina.Sevice.Impl;
 
+import com.google.firebase.database.DataSnapshot;
 import com.myardina.buckeyes.myardina.DTO.UserDTO;
 import com.myardina.buckeyes.myardina.Sevice.UserService;
 
@@ -8,5 +9,11 @@ import com.myardina.buckeyes.myardina.Sevice.UserService;
  */
 public abstract class UserServiceImpl extends BaseServiceImpl implements UserService {
 
-   public abstract UserDTO retrieveFromId(String id);
+    public abstract UserDTO retrieveUser(DataSnapshot dataSnapshot, boolean findChild);
+
+    public abstract UserDTO retrieveFromId(DataSnapshot snapshot, String id);
+
+    public abstract void saveRegisterInformation(UserDTO userDTO);
+
+    public abstract void saveAdditionalInformation(UserDTO userDTO);
 }

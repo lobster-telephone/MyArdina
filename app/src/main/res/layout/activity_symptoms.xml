@@ -24,7 +24,8 @@
                 android:padding="30dp"
                 android:textSize="16sp"
                 android:textColor="@color/blackPrimaryText"
-                android:text="@string/choose_symptoms"/>
+                android:text="@string/choose_symptoms"
+            android:textStyle="bold" />
 
         <RelativeLayout
                 android:id="@+id/symptoms_layout_container"

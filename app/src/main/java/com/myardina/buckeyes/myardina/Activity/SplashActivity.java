@@ -15,6 +15,7 @@ import com.myardina.buckeyes.myardina.R;
  */
 
 public class SplashActivity extends AppCompatActivity {
+
     private static final String LOG_TAG = "SPLASH_ACTIVITY";
 
     Intent intent;
@@ -49,11 +50,45 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Exiting onCreate...");
     }
 
+    /**
+     ******************************
+     *  ACTIVITY LIFECYCLE LOGIC  *
+     ******************************
+     */
+
     @Override
-    protected void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-        finish();
+    protected void onStart() {
+        System.out.println("onStart method for RegisterActivity being called");
+        super.onStart();
     }
 
+    @Override
+    protected void onRestart() {
+        System.out.println("onRestart method for RegisterActivity being called");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onPause() {
+        System.out.println("onPause method for RegisterActivity being called");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        System.out.println("onResume method for RegisterActivity being called");
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        System.out.println("onStop method for RegisterActivity being called");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        System.out.println("onDestroy method for RegisterActivity being called");
+        super.onDestroy();
+    }
 }

@@ -46,7 +46,7 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
         Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor);
-        //setting custom toolbar dont remove
+        //setting custom toolbar don't remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         //TODO: Not sure which activity to go to on back press (need fix in manifest)
@@ -155,6 +155,7 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void initializeDBListeners() {
+        Log.d(LOG_TAG, "Entering initializeDBListeners...");
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {}
@@ -179,6 +180,7 @@ public class DoctorActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         };
+        Log.d(LOG_TAG, "Exiting initializeDBListeners...");
     }
 
     /**

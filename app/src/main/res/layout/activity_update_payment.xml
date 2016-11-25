@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_doctor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.UpdatePaymentActivity">
+
+    <include android:id="@+id/app_bar"
+        layout="@layout/app_bar"/>
+
+    <LinearLayout
+        android:layout_below="@id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/update_payment"
+            android:textColor="@color/blackPrimaryText"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp"
+            android:paddingBottom="20dp"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_doctor_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/blackPrimaryText"
+            android:text="Testing Doctor Name"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_patient_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/blackPrimaryText"
+            android:text="Testing Patient Name"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_payment_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/blackPrimaryText"
+            android:text="Testing Doctor Name"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/b_pay_doctor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/login_auth_buttons"
+            android:textColor="@color/whitePrimaryText"
+            android:text="@string/pay_doctor"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/b_back_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/login_auth_buttons"
+            android:textColor="@color/whitePrimaryText"
+            android:text="@string/back"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>

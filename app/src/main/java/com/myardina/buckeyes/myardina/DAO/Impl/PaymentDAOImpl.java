@@ -9,7 +9,9 @@ import com.myardina.buckeyes.myardina.DAO.PaymentDAO;
 import com.myardina.buckeyes.myardina.DTO.PaymentDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Tyler Lacks on 11/18/2016.
@@ -23,7 +25,7 @@ public class PaymentDAOImpl extends BaseDAOImpl implements PaymentDAO {
     @Override
     public void savePayment(PaymentDTO paymentDTO) {
         Log.d(LOG_TAG, "Entering savePayment...");
-        insert2(paymentDTO, CommonConstants.PAYMENTS_TABLE);
+        insert(paymentDTO, CommonConstants.PAYMENTS_TABLE);
         Log.d(LOG_TAG, "Exiting savePayment...");
     }
 
@@ -35,10 +37,27 @@ public class PaymentDAOImpl extends BaseDAOImpl implements PaymentDAO {
             PaymentDTO payment = (PaymentDTO) retrieve(user, PaymentDTO.class);
             if (!payment.isDoctorPaid() && !TextUtils.isEmpty(payment.getDoctorId())) {
                 pendingPayments.add(payment);
-                payment.setPaymentId(user.getKey());
             }
         }
         Log.d(LOG_TAG, "Exiting retrieveAvailableDoctors...");
         return pendingPayments;
+    }
+
+    @Override
+    public void updatePaidPendingPayment(PaymentDTO paymentDTO) {
+        Log.d(LOG_TAG, "Entering updatePaidPendingPayment...");
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put(CommonConstants.DOCTOR_PAID_COL, true);
+        update(updateMap, CommonConstants.PAYMENTS_TABLE, paymentDTO.getTableKey());
+        Log.d(LOG_TAG, "Entering updatePaidPendingPayment...");
+    }
+
+    @Override
+    public void updatePaymentWithDoctor(PaymentDTO paymentDTO) {
+        Log.d(LOG_TAG, "Entering updatePaymentWithDoctor...");
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put(CommonConstants.DOCTOR_ID_COL, paymentDTO.getDoctorId());
+        update(updateMap, CommonConstants.PAYMENTS_TABLE, paymentDTO.getTableKey());
+        Log.d(LOG_TAG, "Entering updatePaymentWithDoctor...");
     }
 }

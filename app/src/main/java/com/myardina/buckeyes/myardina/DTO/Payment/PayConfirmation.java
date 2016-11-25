@@ -10,8 +10,8 @@ import com.paypal.android.sdk.payments.PaymentConfirmation;
  */
 public class PayConfirmation implements Parcelable {
     private String environment;
-    private Pay pay;
-    private ProofOfPay proofOfPay;
+    private Pay payment;
+    private ProofOfPay proofOfPayment;
 
     public String getEnvironment() {
         return environment;
@@ -21,20 +21,20 @@ public class PayConfirmation implements Parcelable {
         this.environment = environment;
     }
 
-    public Pay getPay() {
-        return pay;
+    public Pay getPayment() {
+        return payment;
     }
 
-    public void setPay(Pay pay) {
-        this.pay = pay;
+    public void setPayment(Pay payment) {
+        this.payment = payment;
     }
 
-    public ProofOfPay getProofOfPay() {
-        return proofOfPay;
+    public ProofOfPay getProofOfPayment() {
+        return proofOfPayment;
     }
 
-    public void setProofOfPay(ProofOfPay proofOfPay) {
-        this.proofOfPay = proofOfPay;
+    public void setProofOfPayment(ProofOfPay proofOfPayment) {
+        this.proofOfPayment = proofOfPayment;
     }
 
     // PARCEL OBJECT
@@ -43,21 +43,21 @@ public class PayConfirmation implements Parcelable {
 
     public PayConfirmation(PaymentConfirmation confirm) {
         this.environment = confirm.getEnvironment();
-        this.pay = new Pay(confirm);
-        this.proofOfPay = new ProofOfPay(confirm);
+        this.payment = new Pay(confirm);
+        this.proofOfPayment = new ProofOfPay(confirm);
     }
 
     public PayConfirmation(Parcel in){
         this.environment = in.readString();
-        this.pay = in.readParcelable(Pay.class.getClassLoader());
-        this.proofOfPay = in.readParcelable(ProofOfPay.class.getClassLoader());
+        this.payment = in.readParcelable(Pay.class.getClassLoader());
+        this.proofOfPayment = in.readParcelable(ProofOfPay.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(environment);
-        dest.writeParcelable(pay, flags);
-        dest.writeParcelable(proofOfPay, flags);
+        dest.writeParcelable(payment, flags);
+        dest.writeParcelable(proofOfPayment, flags);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

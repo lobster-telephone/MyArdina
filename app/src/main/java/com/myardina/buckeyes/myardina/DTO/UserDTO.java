@@ -11,7 +11,6 @@ public abstract class UserDTO extends BaseDTO {
     private String lastName;
     private String userAccountId;
     private String email;
-    private String userKey;
 
     public String getFirstName() {
         return firstName;
@@ -43,14 +42,6 @@ public abstract class UserDTO extends BaseDTO {
         this.email = email;
     }
 
-    public String getUserKey() {
-        return userKey;
-    }
-
-    public void setUserKey(String userKey) {
-        this.userKey = userKey;
-    }
-
     // PARCEL OBJECT
 
     public UserDTO() { super(); }
@@ -61,7 +52,6 @@ public abstract class UserDTO extends BaseDTO {
         this.lastName = in.readString();
         this.userAccountId = in.readString();
         this.email = in.readString();
-        this.userKey = in.readString();
     }
 
     @Override
@@ -71,6 +61,5 @@ public abstract class UserDTO extends BaseDTO {
         dest.writeString(this.lastName);
         dest.writeString(this.userAccountId);
         dest.writeString(this.email);
-        dest.writeString(this.userKey);
     }
 }

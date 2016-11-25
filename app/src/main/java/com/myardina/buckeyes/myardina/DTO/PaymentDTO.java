@@ -10,9 +10,9 @@ import com.myardina.buckeyes.myardina.DTO.Payment.PayConfirmation;
  */
 public class PaymentDTO extends BaseDTO {
     private PayConfirmation paymentConfirmation;
-    private String paymentId;
     private String patientId;
     private String doctorId;
+    private String amountOwedToDoctor;
     private boolean doctorPaid;
 
     public PayConfirmation getPaymentConfirmation() {
@@ -20,10 +20,6 @@ public class PaymentDTO extends BaseDTO {
     }
 
     public void setPaymentConfirmation(PayConfirmation payment) { this.paymentConfirmation = payment; }
-
-    public String getPaymentId() { return paymentId; }
-
-    public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
 
     public String getPatientId() {
         return patientId;
@@ -35,6 +31,14 @@ public class PaymentDTO extends BaseDTO {
 
     public String getDoctorId() {
         return doctorId;
+    }
+
+    public String getAmountOwedToDoctor() {
+        return amountOwedToDoctor;
+    }
+
+    public void setAmountOwedToDoctor(String amountOwedToDoctor) {
+        this.amountOwedToDoctor = amountOwedToDoctor;
     }
 
     public void setDoctorId(String doctorId) {
@@ -59,18 +63,18 @@ public class PaymentDTO extends BaseDTO {
     public PaymentDTO(Parcel in){
         super(in);
         this.paymentConfirmation = in.readParcelable(PayConfirmation.class.getClassLoader());
-        this.paymentId = in.readString();
         this.patientId = in.readString();
         this.doctorId = in.readString();
+        this.amountOwedToDoctor = in.readString();
         this.doctorPaid = in.readByte() != 0;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeParcelable(paymentConfirmation, flags);
-        dest.writeString(paymentId);
         dest.writeString(patientId);
         dest.writeString(doctorId);
+        dest.writeString(amountOwedToDoctor);
         dest.writeByte((byte) (doctorPaid ? 1 : 0));
     }
 

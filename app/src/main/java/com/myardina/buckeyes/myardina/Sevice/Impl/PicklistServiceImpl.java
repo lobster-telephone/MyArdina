@@ -1,10 +1,8 @@
 package com.myardina.buckeyes.myardina.Sevice.Impl;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-import com.myardina.buckeyes.myardina.Common.CommonConstants;
 import com.myardina.buckeyes.myardina.DAO.Impl.PicklistDAOImpl;
 import com.myardina.buckeyes.myardina.DAO.PicklistDAO;
 import com.myardina.buckeyes.myardina.DTO.PicklistDTO;
@@ -17,6 +15,8 @@ import java.util.List;
  */
 public class PicklistServiceImpl extends BaseServiceImpl implements PicklistService {
 
+    private static final String LOG_TAG = "BASE_SERVICE";
+
     private PicklistDAO mPicklistDAO;
 
     public PicklistServiceImpl() {
@@ -25,29 +25,11 @@ public class PicklistServiceImpl extends BaseServiceImpl implements PicklistServ
     }
 
     @Override
-    public List<PicklistDTO> getPicklist(String picklistKey) {
-        PicklistHelper picklistHelper = new PicklistHelper(picklistKey);
-        List<PicklistDTO> picklist = picklistHelper.getPicklist();
+    public List<PicklistDTO> getPicklist(DataSnapshot snapshot, String picklistKey) {
+        Log.d(LOG_TAG, "Entering getPicklist...");
+        List<PicklistDTO> picklist = mPicklistDAO.retrievePicklist(snapshot, picklistKey);
+        Log.d(LOG_TAG, "Exiting getPicklist...");
         return picklist;
     }
 
-    public class PicklistHelper {
-        private List<PicklistDTO> picklist;
-        private DatabaseReference mRef;
-
-        public PicklistHelper(final String picklistKey) {
-            picklist = null;
-            mRef = getDatabaseReference(CommonConstants.PICKLIST_TABLE);
-            mRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    picklist = mPicklistDAO.retrievePicklist(dataSnapshot, picklistKey);
-                    mRef.removeEventListener(this);
-                }
-                @Override public void onCancelled(DatabaseError databaseError) { }
-            });
-        }
-
-        public List<PicklistDTO> getPicklist() { return picklist; }
-    }
 }

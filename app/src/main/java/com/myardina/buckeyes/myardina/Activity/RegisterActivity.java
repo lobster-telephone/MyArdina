@@ -20,23 +20,19 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DAO.DoctorDAO;
-import com.myardina.buckeyes.myardina.DAO.Impl.DoctorDAOImpl;
-import com.myardina.buckeyes.myardina.DAO.Impl.PatientDAOImpl;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.R;
+import com.myardina.buckeyes.myardina.Sevice.Impl.DoctorServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.Impl.PatientServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.UserService;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     private static final String LOG_TAG = "REGISTER_ACTIVITY";
 
-    private FirebaseDatabase ref;
-    private PatientDAOImpl mPatientDAO;
-    private DoctorDAO mDoctorDAO;
+    private UserService mUserService;
 
     private UserRegisterTask mRegTask = null;
 
@@ -53,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         Log.d(LOG_TAG, "Entering onCreate...");
-        //setting custom toolbar dont remove
+        //setting custom toolbar don't remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         //setting back button
@@ -64,10 +60,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         Bundle extras = this.getIntent().getExtras();
 
-        ref = FirebaseDatabase.getInstance();
-
-        mPatientDAO = new PatientDAOImpl();
-        mDoctorDAO = new DoctorDAOImpl();
 
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
@@ -313,28 +305,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     nextActivity = new Intent(RegisterActivity.this, AdditionalInformationActivity.class);
 
                     if (doctor) {
-                        DatabaseReference doctorsTable = ref.getReference(CommonConstants.DOCTORS_TABLE);
-                        DatabaseReference childRef = doctorsTable.push();
                         DoctorDTO doctorDTO = new DoctorDTO();
-                        doctorDTO.setRequesterPhoneNumber(CommonConstants.DEFAULT_REQUESTER_NUMBER);
-                        doctorDTO.setAvailable(false);
-                        doctorDTO.setVerifiedDoctor(false);
-                        doctorDTO.setRequested(false);
                         doctorDTO.setEmail(mEmailView.getText().toString());
                         doctorDTO.setUserAccountId(userAccountId);
-                        doctorDTO.setUserKey(childRef.getKey());
-                        doctorDTO.setTableKey(childRef.getKey());
-                        mDoctorDAO.saveRegisterInformation(doctorDTO);
+                        mUserService = new DoctorServiceImpl();
+                        mUserService.saveRegisterInformation(doctorDTO);
                         nextActivity.putExtra(CommonConstants.DOCTOR_DTO, doctorDTO);
                     } else {
-                        DatabaseReference patientsTable = ref.getReference(CommonConstants.PATIENTS_TABLE);
-                        DatabaseReference childRef = patientsTable.push();
                         PatientDTO patientDTO = new PatientDTO();
                         patientDTO.setEmail(mEmailView.getText().toString());
                         patientDTO.setUserAccountId(userAccountId);
-                        patientDTO.setUserKey(childRef.getKey());
-                        patientDTO.setTableKey(childRef.getKey());
-                        mPatientDAO.saveRegisterInformation(patientDTO);
+                        mUserService = new PatientServiceImpl();
+                        mUserService.saveRegisterInformation(patientDTO);
                         nextActivity.putExtra(CommonConstants.PATIENT_DTO, patientDTO);
                     }
                     RegisterActivity.this.startActivity(nextActivity);

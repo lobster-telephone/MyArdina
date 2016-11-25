@@ -17,12 +17,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
-import com.myardina.buckeyes.myardina.DAO.DoctorDAO;
-import com.myardina.buckeyes.myardina.DAO.Impl.DoctorDAOImpl;
 import com.myardina.buckeyes.myardina.DTO.DoctorDTO;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
 import com.myardina.buckeyes.myardina.DTO.PaymentDTO;
 import com.myardina.buckeyes.myardina.R;
+import com.myardina.buckeyes.myardina.Sevice.DoctorService;
+import com.myardina.buckeyes.myardina.Sevice.Impl.DoctorServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.Impl.PaymentServiceImpl;
+import com.myardina.buckeyes.myardina.Sevice.PaymentService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +37,8 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
     private static final String LOG_TAG = "DOCTORS_AVAILABLE_ACT";
 
     // Data information objects
-    private DoctorDAO mDoctorDAO;
+    private DoctorService mDoctorService;
+    private PaymentService mPaymentService;
     private PatientDTO mPatientDTO;
     private PaymentDTO mPaymentDTO;
 
@@ -54,7 +57,7 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Entering onCreate...");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctors_available);
-        //setting custom toolbar dont remove
+        //setting custom toolbar don't remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         //setting back button
@@ -75,7 +78,8 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
 
         mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
         mPaymentDTO = (PaymentDTO) getIntent().getExtras().get(CommonConstants.PAYMENT_DTO);
-        mDoctorDAO = new DoctorDAOImpl();
+        mDoctorService = new DoctorServiceImpl();
+        mPaymentService = new PaymentServiceImpl();
 
         FirebaseDatabase mRef = FirebaseDatabase.getInstance();
         mDoctorsTable = mRef.getReference().child(CommonConstants.DOCTORS_TABLE);
@@ -84,6 +88,7 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
     }
 
     private void initializeListeners() {
+        Log.d(LOG_TAG, "Entering initializeListeners...");
         mValueEventListener = new ValueEventListener() {
             /**
              * Live update the list of available doctors displayed to the user
@@ -92,9 +97,9 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(LOG_TAG, "Entering onDataChange...");
                 names.clear();
-                List<DoctorDTO> availableDoctors = mDoctorDAO.retrieveAvailableDoctors(dataSnapshot);
+                List<DoctorDTO> availableDoctors = mDoctorService.retrieveAvailableDoctors(dataSnapshot);
                 for (DoctorDTO doctor : availableDoctors) {
-                    userKeys.put(names.size(), doctor.getUserKey());
+                    userKeys.put(names.size(), doctor.getTableKey());
                     String name = doctor.getFirstName() + CommonConstants.SPACE + doctor.getLastName();
                     Log.d(LOG_TAG, "Name: " + name);
                     names.add(name);
@@ -124,12 +129,13 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
                 switch (viewId) {
                     case R.id.lvDoctorsAvailableList:
                         DoctorDTO doctorDTO = new DoctorDTO();
-                        doctorDTO.setUserKey(userKeys.get(position));
+                        doctorDTO.setTableKey(userKeys.get(position));
                         doctorDTO.setRequesterPhoneNumber(mPatientDTO.getPhoneNumber());
-                        mDoctorDAO.updateDoctorToNotAvailable(doctorDTO);
+                        mDoctorService.updateDoctorToNotAvailable(doctorDTO);
                         Intent activity = new Intent(DoctorsAvailableActivity.this, TeleMedicineActivity.class);
                         activity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
                         mPaymentDTO.setDoctorId(doctorDTO.getTableKey());
+                        mPaymentService.updatePaymentWithDoctor(mPaymentDTO);
                         activity.putExtra(CommonConstants.PAYMENT_DTO, mPaymentDTO);
                         mDoctorsTable.removeEventListener(mValueEventListener);
                         DoctorsAvailableActivity.this.startActivity(activity);
@@ -140,6 +146,7 @@ public class DoctorsAvailableActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "Exiting onItemClick...");
             }
         };
+        Log.d(LOG_TAG, "Exiting initializeListeners...");
     }
 
     /**
