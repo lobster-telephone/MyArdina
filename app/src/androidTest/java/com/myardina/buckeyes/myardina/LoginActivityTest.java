@@ -46,8 +46,6 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         solo.waitForActivity(SymptomsActivity.class, 2000);
         // assert that the current activity is the SymptomsActivity.class
         solo.assertCurrentActivity("Expected Symptoms activity", SymptomsActivity.class);
-        //go back to login activity
-        solo.goBack();
     }
 
 

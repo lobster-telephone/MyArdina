@@ -28,9 +28,9 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
     private PatientDTO mPatientDTO;
 
     //list of selected items, for now is in integers referencing the multi choice items in fragment below
-    private static ArrayList<Integer> mSelList;
+    public static ArrayList<Integer> mSelList;
     //this second list will actually keep the text of the symptoms, to be extracted per body part
-    private static  ArrayList<String> mSymptoms;
+    public static  ArrayList<String> mSymptoms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,10 +123,13 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
         DialogFragment newFragment = new SymptomsPickerFragment();
         Bundle args = new Bundle();
         args.putString(CommonConstants.BODY_PART, body_part);
+        args.putString("TAG", "SymptomsPickerDialog");
         newFragment.setArguments(args);
         newFragment.show(fm, CommonConstants.SYMPTOMS_PICKER);
         Log.d(LOG_TAG, "Exiting showSymptomsPickerDialog...");
     }
+
+
 
     //fragment that will have dialog to pick symptoms, depending on body part chosen
     public static class SymptomsPickerFragment extends DialogFragment {
@@ -146,11 +149,18 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
             AlertDialog.Builder alertDialogBuilder =
                 new AlertDialog.Builder(this.getActivity())
                         .setTitle(getString(R.string.choose_3_symptoms))
+                        /*.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getActivity().onBackPressed();
+                            }
+                        })*/
                         .setMultiChoiceItems(symptomsList, bl, new DialogInterface.OnMultiChoiceClickListener() {
 
                             //still need to write code here that makes sure that when the alert dialog is initialized, it already checks the items that were selected before
                             //for example one clicks on the head and selects pink eye, then clicks out, and then opens the alert dialog for head again,
                             //make sure that pink eye checkbox is selected, otherwise can have problems with duplicates of symptoms arising
+
 
                             @Override
                             public void onClick(DialogInterface arg0, int arg1, boolean arg2) {
@@ -185,12 +195,16 @@ public class SymptomsActivity extends AppCompatActivity implements View.OnClickL
                                     }
                                 }
                             }
+
+
                         });
             Log.d(LOG_TAG, "Exiting onCreateDialog...");
 
             // Show the AlertDialog
             return alertDialogBuilder.show();
         }
+
+
     }
 
     /**
