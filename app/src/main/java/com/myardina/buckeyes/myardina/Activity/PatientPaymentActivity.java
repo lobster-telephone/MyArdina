@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import com.myardina.buckeyes.myardina.Common.CommonConstants;
 import com.myardina.buckeyes.myardina.DTO.PatientDTO;
+import com.myardina.buckeyes.myardina.DTO.Payment.Pay;
 import com.myardina.buckeyes.myardina.DTO.Payment.PayConfirmation;
+import com.myardina.buckeyes.myardina.DTO.Payment.ProofOfPay;
 import com.myardina.buckeyes.myardina.DTO.PaymentDTO;
 import com.myardina.buckeyes.myardina.R;
 import com.myardina.buckeyes.myardina.Sevice.Impl.PaymentServiceImpl;
@@ -76,7 +78,7 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
         // UI References
         Button paypalLoginButton = (Button) findViewById(R.id.login_paypal);
         paypalLoginButton.setOnClickListener(this);
-        Button continueButton = (Button) findViewById(R.id.b_continue_to_map);
+        Button continueButton = (Button) findViewById(R.id.b_debug_to_doctors_available);
         continueButton.setOnClickListener(this);
 
         mPatientDTO = (PatientDTO) getIntent().getExtras().get(CommonConstants.PATIENT_DTO);
@@ -109,9 +111,31 @@ public class PatientPaymentActivity extends AppCompatActivity implements View.On
                 intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
                 startActivityForResult(intent, 0);
                 break;
-            case R.id.b_continue_to_map:
+            case R.id.b_debug_to_doctors_available:
                 Intent doctorsAvailableActivity = new Intent(PatientPaymentActivity.this, DoctorsAvailableActivity.class);
                 doctorsAvailableActivity.putExtra(CommonConstants.PATIENT_DTO, mPatientDTO);
+                PaymentDTO paymentDTO = new PaymentDTO();
+                paymentDTO.setAmountOwedToDoctor("$79.00");
+                paymentDTO.setDoctorId("");
+                paymentDTO.setDoctorPaid(false);
+                paymentDTO.setPatientId("-KWzFiTCKJapSvbtqDZ-");
+                PayConfirmation payConfirm = new PayConfirmation();
+                payConfirm.setEnvironment("sandbox");
+                Pay pay = new Pay();
+                pay.setAmountAsLocalizedString("$79.00");
+                pay.setEnablePayPalShippingAddressesRetrieval(false);
+                pay.setNoShipping(true);
+                pay.setProcessable(true);
+                payConfirm.setPayment(pay);
+                ProofOfPay proofOfPay = new ProofOfPay();
+                proofOfPay.setCreateTime("2016-12-01T03:13:09Z");
+                proofOfPay.setIntent("sale");
+                proofOfPay.setPaymentId("PAY-4AD34505MW9182711LA7ZKOA");
+                proofOfPay.setState("approved");
+                payConfirm.setProofOfPayment(proofOfPay);
+                paymentDTO.setPaymentConfirmation(payConfirm);
+                paymentDTO.setTableKey("-KXsMlcS4bj17ecgJ7hG");
+                doctorsAvailableActivity.putExtra(CommonConstants.PAYMENT_DTO, paymentDTO);
                 PatientPaymentActivity.this.startActivity(doctorsAvailableActivity);
                 break;
             default:
