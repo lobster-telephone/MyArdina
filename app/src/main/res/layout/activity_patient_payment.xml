@@ -57,7 +57,7 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/b_continue_to_map"
+                android:id="@+id/b_debug_to_doctors_available"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"

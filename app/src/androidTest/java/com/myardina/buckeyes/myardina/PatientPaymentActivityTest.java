@@ -1,29 +1,15 @@
 package com.myardina.buckeyes.myardina;
 
-import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.myardina.buckeyes.myardina.Activity.DoctorsAvailableActivity;
 import com.myardina.buckeyes.myardina.Activity.LoginActivity;
-import com.myardina.buckeyes.myardina.Activity.SplashActivity;
-import com.myardina.buckeyes.myardina.Activity.SymptomsActivity;
 import com.myardina.buckeyes.myardina.Activity.PatientPaymentActivity;
-import com.paypal.android.sdk.v;
-import com.robotium.solo.Solo;
-
-
-import com.myardina.buckeyes.myardina.Sevice.Impl.PaymentServiceImpl;
-import com.myardina.buckeyes.myardina.Sevice.PaymentService;
-import com.paypal.android.sdk.payments.PayPalConfiguration;
-import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalService;
+import com.myardina.buckeyes.myardina.Activity.SymptomsActivity;
 import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
+import com.robotium.solo.Solo;
 /**
  * Created by mishaberkovich on 11/30/16.
  */
@@ -121,7 +107,7 @@ public class PatientPaymentActivityTest extends ActivityInstrumentationTestCase2
         solo.waitForActivity(PatientPaymentActivity.class, 2000);
         solo.assertCurrentActivity("Expected PatientPayment activity", PatientPaymentActivity.class);
         //should be on payment activity now
-        continueButton = (Button) solo.getCurrentActivity().findViewById(R.id.b_continue_to_map);
+        continueButton = (Button) solo.getCurrentActivity().findViewById(R.id.b_debug_to_doctors_available);
         solo.waitForView(continueButton, 2000, false);
         solo.clickOnView(continueButton);
         //wait for and check that next activity is PaymentActivity
